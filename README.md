@@ -6,6 +6,17 @@ It can be trivially integrated with any game, frequently has faster performance 
 
 **If you're just someone that plays rhythm games, you can install [the Backbeat App](https://backbeat.ac) and then click `Download with Backbeat` buttons on websites.** Beyond that you shouldn't need to know or care about Backbeat - everything else here is technical crap for nerds.
 
+### Install on macOS with Homebrew
+
+```sh
+brew tap zkldi/backbeat https://github.com/zkldi/backbeat
+brew install --cask backbeat
+```
+
+Backbeat is currently unsigned. If macOS blocks the first launch, try opening
+Backbeat and then select **Open Anyway** under **System Settings → Privacy &
+Security**.
+
 It also comes with support for Packs, Difficulty Tables and Courses, which are ways to arrange rhythm game charts. Games that integrate Backbeat get these powerful features, _for free_.
 
 You never again have to faff around with google drive links, trawling discord, and unraring files in the right locale.
