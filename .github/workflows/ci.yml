@@ -1,529 +1,529 @@
 name: CI
 
 on:
-  workflow_call:
-    inputs:
-      capi_only:
-        description: Skip jobs unrelated to publishing the C API SDK
-        type: boolean
-        default: false
-  pull_request:
-  push:
-    branches:
-      - main
+    workflow_call:
+        inputs:
+            capi_only:
+                description: Skip jobs unrelated to publishing the C API SDK
+                type: boolean
+                default: false
+    pull_request:
+    push:
+        branches:
+            - main
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    group: ci-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
 
 permissions:
-  contents: read
+    contents: read
 
 jobs:
-  website:
-    name: Website
-    if: ${{ !inputs.capi_only }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    website:
+        name: Website
+        if: ${{ !inputs.capi_only }}
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - name: Install Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+            - name: Install Bun
+              uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
-      - name: Install JavaScript dependencies
-        run: bun install --frozen-lockfile
+            - name: Install JavaScript dependencies
+              run: bun install --frozen-lockfile
 
-      - name: Build website
-        run: bun run --filter backbeat-website build
+            - name: Build website
+              run: bun run --filter backbeat-website build
 
-      - name: Upload website
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: backbeat-website
-          path: typescript/backbeat-website/dist
-          archive: true
-          if-no-files-found: error
-          retention-days: 14
+            - name: Upload website
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: backbeat-website
+                  path: typescript/backbeat-website/dist
+                  archive: true
+                  if-no-files-found: error
+                  retention-days: 14
 
-  validate:
-    name: Checks and tests
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
-    env:
-      CARGO_PROFILE_DEV_DEBUG: "0"
-      CARGO_PROFILE_TEST_DEBUG: "0"
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-
-      - name: Install native dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends \
-            build-essential \
-            clang \
-            cmake \
-            ffmpeg \
-            file \
-            libayatana-appindicator3-dev \
-            librsvg2-dev \
-            libssl-dev \
-            libsqlite3-dev \
-            libwebkit2gtk-4.1-dev \
-            libxdo-dev \
-            lld \
-            pkg-config
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
-        with:
-          toolchain: 1.96.0
-          components: clippy,rustfmt
-
-      - name: Cache Rust build artifacts
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-        with:
-          env-vars: CARGO_PROFILE_DEV_DEBUG CARGO_PROFILE_TEST_DEBUG
-
-      - name: Install Rust development tools
-        uses: taiki-e/install-action@b6b84cf49ebfe0176417bdce007c624f0db37f20 # v2.86.2
-        with:
-          tool: just,cargo-machete,cargo-nextest,sqlx-cli@0.9.0
-
-      - name: Install Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-
-      - name: Install JavaScript dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Run checks
-        run: just check
-
-      - name: Run tests
-        run: just test
-
-  capi-artifacts:
-    name: C API (${{ matrix.target }})
-    if: ${{ false }}
-    needs: validate
-    runs-on: ${{ matrix.runner }}
-    timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: windows-2022
-            target: x86_64-pc-windows-msvc
-            package: backbeat-c-sdk-x86_64-pc-windows-msvc
-            library: backbeat_c_sdk.lib
-            shared_library: backbeat_c_sdk.dll
-            native_platform: windows-x86-64
-          - runner: macos-15
-            target: aarch64-apple-darwin
-            package: backbeat-c-sdk-aarch64-apple-darwin
-            library: libbackbeat_c_sdk.a
-            shared_library: libbackbeat_c_sdk.dylib
-            native_platform: macos-aarch64
-          - runner: macos-15-intel
-            target: x86_64-apple-darwin
-            package: backbeat-c-sdk-x86_64-apple-darwin
-            library: libbackbeat_c_sdk.a
-            shared_library: libbackbeat_c_sdk.dylib
-            native_platform: macos-x86-64
-          - runner: ubuntu-22.04-arm
-            target: aarch64-unknown-linux-gnu
-            package: backbeat-c-sdk-aarch64-unknown-linux-gnu
-            library: libbackbeat_c_sdk.a
-            shared_library: libbackbeat_c_sdk.so
-            native_platform: linux-aarch64
-          - runner: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
-            package: backbeat-c-sdk-x86_64-unknown-linux-gnu
-            library: libbackbeat_c_sdk.a
-            shared_library: libbackbeat_c_sdk.so
-            native_platform: linux-x86-64
-    env:
-      BKB_LIBCOMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
-      BKB_HEADER_PATH: ${{ github.workspace }}/target/${{ matrix.target }}/release/backbeat.h
-      CARGO_INCREMENTAL: "0"
-      MACOSX_DEPLOYMENT_TARGET: "11.0"
-      SQLITE3_INCLUDE_DIR: ${{ github.workspace }}/target/package-sqlite/include
-      SQLITE3_LIB_DIR: ${{ github.workspace }}/target/package-sqlite/lib
-      # Keep SQLite as a separate archive so the host can substitute its own compatible build.
-      SQLITE3_STATIC: "0"
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-
-      - name: Install Linux native dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends \
-            build-essential \
-            cmake \
-            libssl-dev \
-            pkg-config \
-            zip
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
-        with:
-          toolchain: 1.96.0
-          targets: ${{ matrix.target }}
-
-      - name: Cache Rust build artifacts
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-        with:
-          key: capi-${{ matrix.target }}
-
-      - name: Build package SQLite on Unix
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          sqlite_dir="target/package-sqlite"
-          sqlite_zip="$sqlite_dir/sqlite.zip"
-          mkdir -p "$sqlite_dir/include" "$sqlite_dir/lib"
-          curl --fail --location --silent --show-error \
-            https://sqlite.org/2024/sqlite-amalgamation-3460000.zip \
-            --output "$sqlite_zip"
-          echo "712a7d09d2a22652fb06a49af516e051979a3984adb067da86760e60ed51a7f5  $sqlite_zip" | shasum -a 256 --check
-          unzip -q "$sqlite_zip" -d "$sqlite_dir/source"
-          cp "$sqlite_dir/source/sqlite-amalgamation-3460000/sqlite3.h" "$sqlite_dir/include/sqlite3.h"
-          cc -O2 -fPIC \
-            -DSQLITE_ENABLE_COLUMN_METADATA \
-            -DSQLITE_ENABLE_FTS5 \
-            -DSQLITE_THREADSAFE=1 \
-            -DSQLITE_USE_URI=1 \
-            -c "$sqlite_dir/source/sqlite-amalgamation-3460000/sqlite3.c" \
-            -o "$sqlite_dir/sqlite3.o"
-          ar rcs "$sqlite_dir/lib/libsqlite3.a" "$sqlite_dir/sqlite3.o"
-
-      - name: Build package SQLite on Windows
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set "VS_INSTALL=%%i"
-          call "%VS_INSTALL%\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64
-          mkdir target\package-sqlite\include
-          mkdir target\package-sqlite\lib
-          curl.exe --fail --location --silent --show-error https://sqlite.org/2024/sqlite-amalgamation-3460000.zip --output target\package-sqlite\sqlite.zip
-          certutil -hashfile target\package-sqlite\sqlite.zip SHA256 | findstr /i "712a7d09d2a22652fb06a49af516e051979a3984adb067da86760e60ed51a7f5" || exit /b 1
-          tar -xf target\package-sqlite\sqlite.zip -C target\package-sqlite
-          copy target\package-sqlite\sqlite-amalgamation-3460000\sqlite3.h target\package-sqlite\include\sqlite3.h
-          cl /nologo /O2 /c /DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_FTS5 /DSQLITE_THREADSAFE=1 /DSQLITE_USE_URI=1 target\package-sqlite\sqlite-amalgamation-3460000\sqlite3.c /Fotarget\package-sqlite\sqlite3.obj || exit /b 1
-          lib /nologo /OUT:target\package-sqlite\lib\sqlite3.lib target\package-sqlite\sqlite3.obj || exit /b 1
-
-      - name: Install SQLx CLI
-        uses: taiki-e/install-action@b6b84cf49ebfe0176417bdce007c624f0db37f20 # v2.86.2
-        with:
-          tool: sqlx-cli@0.9.0
-
-      - name: Build static library
-        run: cargo build --locked --release --target ${{ matrix.target }} -p backbeat_c_sdk
-
-      - name: Build self-contained shared library
+    validate:
+        name: Checks and tests
+        runs-on: ubuntu-24.04
+        timeout-minutes: 45
         env:
-          CARGO_TARGET_DIR: ${{ github.workspace }}/target/java-sdk
-          SQLITE3_STATIC: "1"
-        run: cargo build --locked --release --target ${{ matrix.target }} -p backbeat_c_sdk
+            CARGO_PROFILE_DEV_DEBUG: "0"
+            CARGO_PROFILE_TEST_DEBUG: "0"
 
-      - name: Validate Unix shared-library exports
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          library="target/java-sdk/${{ matrix.target }}/release/${{ matrix.shared_library }}"
-          if [[ "${{ runner.os }}" == "macOS" ]]; then
-            exports="$(nm -gU "$library")"
-          else
-            exports="$(nm -D --defined-only "$library")"
-          fi
-          grep -q bkb_libversion <<< "$exports"
-          if grep -q sqlite3_ <<< "$exports"; then
-            echo "SQLite symbols must not be exported from the Backbeat shared library" >&2
-            exit 1
-          fi
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - name: Validate Windows shared-library exports
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set "VS_INSTALL=%%i"
-          call "%VS_INSTALL%\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64
-          dumpbin /exports "target\java-sdk\${{ matrix.target }}\release\${{ matrix.shared_library }}" > target\java-sdk\exports.txt
-          findstr /c:"bkb_libversion" target\java-sdk\exports.txt || exit /b 1
-          findstr /c:"sqlite3_" target\java-sdk\exports.txt && exit /b 1 || exit /b 0
+            - name: Install native dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install --yes --no-install-recommends \
+                    build-essential \
+                    clang \
+                    cmake \
+                    ffmpeg \
+                    file \
+                    libayatana-appindicator3-dev \
+                    librsvg2-dev \
+                    libssl-dev \
+                    libsqlite3-dev \
+                    libwebkit2gtk-4.1-dev \
+                    libxdo-dev \
+                    lld \
+                    pkg-config
 
-      - name: Set up Java
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
-        with:
-          distribution: temurin
-          java-version: "17"
+            - name: Install Rust toolchain
+              uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+              with:
+                  toolchain: 1.96.0
+                  components: clippy,rustfmt
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
-        with:
-          gradle-version: "8.10.2"
+            - name: Cache Rust build artifacts
+              uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+              with:
+                  env-vars: CARGO_PROFILE_DEV_DEBUG CARGO_PROFILE_TEST_DEBUG
 
-      - name: Test Java SDK against native library
-        shell: bash
+            - name: Install Rust development tools
+              uses: taiki-e/install-action@b6b84cf49ebfe0176417bdce007c624f0db37f20 # v2.86.2
+              with:
+                  tool: just,cargo-machete,cargo-nextest,sqlx-cli@0.9.0
+
+            - name: Install Bun
+              uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+            - name: Install JavaScript dependencies
+              run: bun install --frozen-lockfile
+
+            - name: Run checks
+              run: just check
+
+            - name: Run tests
+              run: just test
+
+    capi-artifacts:
+        name: C API (${{ matrix.target }})
+        if: ${{ false }}
+        needs: validate
+        runs-on: ${{ matrix.runner }}
+        timeout-minutes: 45
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - runner: windows-2022
+                      target: x86_64-pc-windows-msvc
+                      package: backbeat-c-sdk-x86_64-pc-windows-msvc
+                      library: backbeat_c_sdk.lib
+                      shared_library: backbeat_c_sdk.dll
+                      native_platform: windows-x86-64
+                    - runner: macos-15
+                      target: aarch64-apple-darwin
+                      package: backbeat-c-sdk-aarch64-apple-darwin
+                      library: libbackbeat_c_sdk.a
+                      shared_library: libbackbeat_c_sdk.dylib
+                      native_platform: macos-aarch64
+                    - runner: macos-15-intel
+                      target: x86_64-apple-darwin
+                      package: backbeat-c-sdk-x86_64-apple-darwin
+                      library: libbackbeat_c_sdk.a
+                      shared_library: libbackbeat_c_sdk.dylib
+                      native_platform: macos-x86-64
+                    - runner: ubuntu-22.04-arm
+                      target: aarch64-unknown-linux-gnu
+                      package: backbeat-c-sdk-aarch64-unknown-linux-gnu
+                      library: libbackbeat_c_sdk.a
+                      shared_library: libbackbeat_c_sdk.so
+                      native_platform: linux-aarch64
+                    - runner: ubuntu-22.04
+                      target: x86_64-unknown-linux-gnu
+                      package: backbeat-c-sdk-x86_64-unknown-linux-gnu
+                      library: libbackbeat_c_sdk.a
+                      shared_library: libbackbeat_c_sdk.so
+                      native_platform: linux-x86-64
         env:
-          XDG_CONFIG_HOME: ${{ runner.temp }}/backbeat/config
-          XDG_DATA_HOME: ${{ runner.temp }}/backbeat/data
-          LOCALAPPDATA: ${{ runner.temp }}/backbeat/local
-          APPDATA: ${{ runner.temp }}/backbeat/roaming
-        run: |
-          native_library="$PWD/target/java-sdk/${{ matrix.target }}/release/${{ matrix.shared_library }}"
-          gradle -p java test \
-            -PbackbeatVersion=0.5.0 \
-            "-PnativeLibrary=$native_library" \
-            -PnativePlatform=${{ matrix.native_platform }}
+            BKB_LIBCOMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+            BKB_HEADER_PATH: ${{ github.workspace }}/target/${{ matrix.target }}/release/backbeat.h
+            CARGO_INCREMENTAL: "0"
+            MACOSX_DEPLOYMENT_TARGET: "11.0"
+            SQLITE3_INCLUDE_DIR: ${{ github.workspace }}/target/package-sqlite/include
+            SQLITE3_LIB_DIR: ${{ github.workspace }}/target/package-sqlite/lib
+            # Keep SQLite as a separate archive so the host can substitute its own compatible build.
+            SQLITE3_STATIC: "0"
 
-      - name: Build Java native JAR
-        shell: bash
-        run: |
-          native_library="$PWD/target/java-sdk/${{ matrix.target }}/release/${{ matrix.shared_library }}"
-          gradle -p java nativeJar \
-            -PbackbeatVersion=0.5.0 \
-            "-PnativeLibrary=$native_library" \
-            -PnativePlatform=${{ matrix.native_platform }}
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - name: Stage Unix package
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          package_dir="dist/${{ matrix.package }}"
-          mkdir -p "$package_dir/include" "$package_dir/lib/pkgconfig" "$package_dir/lib/cmake/Backbeat"
-          cp "target/${{ matrix.target }}/release/backbeat.h" "$package_dir/include/backbeat.h"
-          cp "target/package-sqlite/include/sqlite3.h" "$package_dir/include/sqlite3.h"
-          cp "target/${{ matrix.target }}/release/${{ matrix.library }}" "$package_dir/lib/${{ matrix.library }}"
-          cp "target/package-sqlite/lib/libsqlite3.a" "$package_dir/lib/libsqlite3.a"
-          cp "rust/backbeat_c_sdk/cmake/BackbeatConfig.cmake" "$package_dir/lib/cmake/Backbeat/BackbeatConfig.cmake"
+            - name: Install Linux native dependencies
+              if: runner.os == 'Linux'
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install --yes --no-install-recommends \
+                    build-essential \
+                    cmake \
+                    libssl-dev \
+                    pkg-config \
+                    zip
 
-          if [[ "${{ runner.os }}" == "macOS" ]]; then
-            private_libs="-lsqlite3 -framework Security -framework SystemConfiguration -framework CoreFoundation -liconv"
-          else
-            private_libs="-lsqlite3 -lssl -lcrypto -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc"
-          fi
-          version="$(sed -n 's/^#define BKB_LIBVERSION //p' "$package_dir/include/backbeat.h")"
+            - name: Install Rust toolchain
+              uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # v1
+              with:
+                  toolchain: 1.96.0
+                  targets: ${{ matrix.target }}
 
-          cat > "$package_dir/lib/pkgconfig/backbeat.pc" <<EOF
-          prefix=\${pcfiledir}/../..
-          libdir=\${prefix}/lib
-          includedir=\${prefix}/include
+            - name: Cache Rust build artifacts
+              uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+              with:
+                  key: capi-${{ matrix.target }}
 
-          Name: backbeat
-          Description: Backbeat C API
-          Version: $version
-          Libs: -L\${libdir} -lbackbeat_c_sdk
-          Libs.private: $private_libs
-          Cflags: -I\${includedir}
-          EOF
+            - name: Build package SQLite on Unix
+              if: runner.os != 'Windows'
+              shell: bash
+              run: |
+                  sqlite_dir="target/package-sqlite"
+                  sqlite_zip="$sqlite_dir/sqlite.zip"
+                  mkdir -p "$sqlite_dir/include" "$sqlite_dir/lib"
+                  curl --fail --location --silent --show-error \
+                    https://sqlite.org/2024/sqlite-amalgamation-3460000.zip \
+                    --output "$sqlite_zip"
+                  echo "712a7d09d2a22652fb06a49af516e051979a3984adb067da86760e60ed51a7f5  $sqlite_zip" | shasum -a 256 --check
+                  unzip -q "$sqlite_zip" -d "$sqlite_dir/source"
+                  cp "$sqlite_dir/source/sqlite-amalgamation-3460000/sqlite3.h" "$sqlite_dir/include/sqlite3.h"
+                  cc -O2 -fPIC \
+                    -DSQLITE_ENABLE_COLUMN_METADATA \
+                    -DSQLITE_ENABLE_FTS5 \
+                    -DSQLITE_THREADSAFE=1 \
+                    -DSQLITE_USE_URI=1 \
+                    -c "$sqlite_dir/source/sqlite-amalgamation-3460000/sqlite3.c" \
+                    -o "$sqlite_dir/sqlite3.o"
+                  ar rcs "$sqlite_dir/lib/libsqlite3.a" "$sqlite_dir/sqlite3.o"
 
-      - name: Smoke-test Unix package
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          package_dir="dist/${{ matrix.package }}"
-          output_dir="target/capi-package-smoke"
-          mkdir -p "$output_dir"
+            - name: Build package SQLite on Windows
+              if: runner.os == 'Windows'
+              shell: cmd
+              run: |
+                  for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set "VS_INSTALL=%%i"
+                  call "%VS_INSTALL%\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64
+                  mkdir target\package-sqlite\include
+                  mkdir target\package-sqlite\lib
+                  curl.exe --fail --location --silent --show-error https://sqlite.org/2024/sqlite-amalgamation-3460000.zip --output target\package-sqlite\sqlite.zip
+                  certutil -hashfile target\package-sqlite\sqlite.zip SHA256 | findstr /i "712a7d09d2a22652fb06a49af516e051979a3984adb067da86760e60ed51a7f5" || exit /b 1
+                  tar -xf target\package-sqlite\sqlite.zip -C target\package-sqlite
+                  copy target\package-sqlite\sqlite-amalgamation-3460000\sqlite3.h target\package-sqlite\include\sqlite3.h
+                  cl /nologo /O2 /c /DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_FTS5 /DSQLITE_THREADSAFE=1 /DSQLITE_USE_URI=1 target\package-sqlite\sqlite-amalgamation-3460000\sqlite3.c /Fotarget\package-sqlite\sqlite3.obj || exit /b 1
+                  lib /nologo /OUT:target\package-sqlite\lib\sqlite3.lib target\package-sqlite\sqlite3.obj || exit /b 1
 
-          read -r -a link_flags <<< "$(PKG_CONFIG_PATH="$package_dir/lib/pkgconfig" pkg-config --cflags --libs --static backbeat)"
+            - name: Install SQLx CLI
+              uses: taiki-e/install-action@b6b84cf49ebfe0176417bdce007c624f0db37f20 # v2.86.2
+              with:
+                  tool: sqlx-cli@0.9.0
 
-          for source in store_info.c asset_read.c version.c; do
-            name="${source%.c}"
-            cc -std=c11 -Wall -Wextra -Werror \
-              "rust/backbeat_c_sdk/c_examples/$source" "${link_flags[@]}" \
-              -o "$output_dir/$name"
-          done
+            - name: Build static library
+              run: cargo build --locked --release --target ${{ matrix.target }} -p backbeat_c_sdk
 
-          c++ -std=c++17 -Wall -Wextra -Werror \
-            rust/backbeat_c_sdk/c_examples/cpp_link.cpp "${link_flags[@]}" \
-            -o "$output_dir/cpp_link"
-          "$output_dir/version"
-          "$output_dir/cpp_link"
-          smoke_home="$(mktemp -d)"
-          env HOME="$smoke_home" "$output_dir/store_info"
+            - name: Build self-contained shared library
+              env:
+                  CARGO_TARGET_DIR: ${{ github.workspace }}/target/java-sdk
+                  SQLITE3_STATIC: "1"
+              run: cargo build --locked --release --target ${{ matrix.target }} -p backbeat_c_sdk
 
-          cmake -S rust/backbeat_c_sdk/c_examples -B "$output_dir/cmake" \
-            -DCMAKE_PREFIX_PATH="$PWD/$package_dir"
-          cmake --build "$output_dir/cmake"
-          "$output_dir/cmake/version"
-          "$output_dir/cmake/cpp_link"
+            - name: Validate Unix shared-library exports
+              if: runner.os != 'Windows'
+              shell: bash
+              run: |
+                  library="target/java-sdk/${{ matrix.target }}/release/${{ matrix.shared_library }}"
+                  if [[ "${{ runner.os }}" == "macOS" ]]; then
+                    exports="$(nm -gU "$library")"
+                  else
+                    exports="$(nm -D --defined-only "$library")"
+                  fi
+                  grep -q bkb_libversion <<< "$exports"
+                  if grep -q sqlite3_ <<< "$exports"; then
+                    echo "SQLite symbols must not be exported from the Backbeat shared library" >&2
+                    exit 1
+                  fi
 
-      - name: Create Unix ZIP
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          cd dist
-          zip -r "${{ matrix.package }}.zip" "${{ matrix.package }}"
+            - name: Validate Windows shared-library exports
+              if: runner.os == 'Windows'
+              shell: cmd
+              run: |
+                  for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set "VS_INSTALL=%%i"
+                  call "%VS_INSTALL%\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64
+                  dumpbin /exports "target\java-sdk\${{ matrix.target }}\release\${{ matrix.shared_library }}" > target\java-sdk\exports.txt
+                  findstr /c:"bkb_libversion" target\java-sdk\exports.txt || exit /b 1
+                  findstr /c:"sqlite3_" target\java-sdk\exports.txt && exit /b 1 || exit /b 0
 
-      - name: Stage and smoke-test Windows package
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set "VS_INSTALL=%%i"
-          call "%VS_INSTALL%\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64
+            - name: Set up Java
+              uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+              with:
+                  distribution: temurin
+                  java-version: "17"
 
-          set "PACKAGE_DIR=dist\${{ matrix.package }}"
-          set "OUTPUT_DIR=target\capi-package-smoke"
-          set "LINK_LIBS=advapi32.lib bcrypt.lib kernel32.lib ntdll.lib ole32.lib shell32.lib userenv.lib ws2_32.lib msvcrt.lib"
-          mkdir "%PACKAGE_DIR%\include"
-          mkdir "%PACKAGE_DIR%\lib"
-          mkdir "%PACKAGE_DIR%\lib\cmake"
-          mkdir "%PACKAGE_DIR%\lib\cmake\Backbeat"
-          mkdir "%OUTPUT_DIR%"
-          copy "target\${{ matrix.target }}\release\backbeat.h" "%PACKAGE_DIR%\include\backbeat.h"
-          copy "target\package-sqlite\include\sqlite3.h" "%PACKAGE_DIR%\include\sqlite3.h"
-          copy "target\${{ matrix.target }}\release\${{ matrix.library }}" "%PACKAGE_DIR%\lib\${{ matrix.library }}"
-          copy "target\package-sqlite\lib\sqlite3.lib" "%PACKAGE_DIR%\lib\sqlite3.lib"
-          copy "rust\backbeat_c_sdk\cmake\BackbeatConfig.cmake" "%PACKAGE_DIR%\lib\cmake\Backbeat\BackbeatConfig.cmake"
+            - name: Set up Gradle
+              uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
+              with:
+                  gradle-version: "8.10.2"
 
-          set "LINK_LIBS=%PACKAGE_DIR%\lib\sqlite3.lib %LINK_LIBS%"
+            - name: Test Java SDK against native library
+              shell: bash
+              env:
+                  XDG_CONFIG_HOME: ${{ runner.temp }}/backbeat/config
+                  XDG_DATA_HOME: ${{ runner.temp }}/backbeat/data
+                  LOCALAPPDATA: ${{ runner.temp }}/backbeat/local
+                  APPDATA: ${{ runner.temp }}/backbeat/roaming
+              run: |
+                  native_library="$PWD/target/java-sdk/${{ matrix.target }}/release/${{ matrix.shared_library }}"
+                  gradle -p java test \
+                    -PbackbeatVersion=0.5.0 \
+                    "-PnativeLibrary=$native_library" \
+                    -PnativePlatform=${{ matrix.native_platform }}
 
-          for %%s in (store_info asset_read version) do (
-            cl /nologo /W4 /WX /MD /D_CRT_SECURE_NO_WARNINGS /I"%PACKAGE_DIR%\include" "rust\backbeat_c_sdk\c_examples\%%s.c" "%PACKAGE_DIR%\lib\${{ matrix.library }}" %LINK_LIBS% /Fe:"%OUTPUT_DIR%\%%s.exe" || exit /b 1
-          )
-          cl /nologo /W4 /WX /MD /EHsc /I"%PACKAGE_DIR%\include" "rust\backbeat_c_sdk\c_examples\cpp_link.cpp" "%PACKAGE_DIR%\lib\${{ matrix.library }}" %LINK_LIBS% /Fe:"%OUTPUT_DIR%\cpp_link.exe" || exit /b 1
-          "%OUTPUT_DIR%\version.exe"
-          "%OUTPUT_DIR%\cpp_link.exe"
-          "%OUTPUT_DIR%\store_info.exe"
+            - name: Build Java native JAR
+              shell: bash
+              run: |
+                  native_library="$PWD/target/java-sdk/${{ matrix.target }}/release/${{ matrix.shared_library }}"
+                  gradle -p java nativeJar \
+                    -PbackbeatVersion=0.5.0 \
+                    "-PnativeLibrary=$native_library" \
+                    -PnativePlatform=${{ matrix.native_platform }}
 
-          cmake -S rust\backbeat_c_sdk\c_examples -B "%OUTPUT_DIR%\cmake" -DCMAKE_PREFIX_PATH="%CD%\%PACKAGE_DIR%" || exit /b 1
-          cmake --build "%OUTPUT_DIR%\cmake" --config Release || exit /b 1
-          "%OUTPUT_DIR%\cmake\Release\version.exe" || exit /b 1
-          "%OUTPUT_DIR%\cmake\Release\cpp_link.exe" || exit /b 1
+            - name: Stage Unix package
+              if: runner.os != 'Windows'
+              shell: bash
+              run: |
+                  package_dir="dist/${{ matrix.package }}"
+                  mkdir -p "$package_dir/include" "$package_dir/lib/pkgconfig" "$package_dir/lib/cmake/Backbeat"
+                  cp "target/${{ matrix.target }}/release/backbeat.h" "$package_dir/include/backbeat.h"
+                  cp "target/package-sqlite/include/sqlite3.h" "$package_dir/include/sqlite3.h"
+                  cp "target/${{ matrix.target }}/release/${{ matrix.library }}" "$package_dir/lib/${{ matrix.library }}"
+                  cp "target/package-sqlite/lib/libsqlite3.a" "$package_dir/lib/libsqlite3.a"
+                  cp "rust/backbeat_c_sdk/cmake/BackbeatConfig.cmake" "$package_dir/lib/cmake/Backbeat/BackbeatConfig.cmake"
 
-      - name: Create Windows ZIP
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: Compress-Archive -Path "dist/${{ matrix.package }}" -DestinationPath "dist/${{ matrix.package }}.zip"
+                  if [[ "${{ runner.os }}" == "macOS" ]]; then
+                    private_libs="-lsqlite3 -framework Security -framework SystemConfiguration -framework CoreFoundation -liconv"
+                  else
+                    private_libs="-lsqlite3 -lssl -lcrypto -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc"
+                  fi
+                  version="$(sed -n 's/^#define BKB_LIBVERSION //p' "$package_dir/include/backbeat.h")"
 
-      - name: Stage Java native JAR
-        shell: bash
-        run: cp "java/build/libs/backbeat-java-sdk-0.5.0-${{ matrix.native_platform }}.jar" "dist/backbeat-java-sdk-0.5.0-${{ matrix.native_platform }}.jar"
+                  cat > "$package_dir/lib/pkgconfig/backbeat.pc" <<EOF
+                  prefix=\${pcfiledir}/../..
+                  libdir=\${prefix}/lib
+                  includedir=\${prefix}/include
 
-      - name: Upload package
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: ${{ matrix.package }}
-          path: |
-            dist/${{ matrix.package }}.zip
-            dist/backbeat-java-sdk-0.5.0-${{ matrix.native_platform }}.jar
-          archive: true
-          if-no-files-found: error
-          retention-days: 14
+                  Name: backbeat
+                  Description: Backbeat C API
+                  Version: $version
+                  Libs: -L\${libdir} -lbackbeat_c_sdk
+                  Libs.private: $private_libs
+                  Cflags: -I\${includedir}
+                  EOF
 
-  java-sdk:
-    name: Java SDK
-    needs: validate
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
+            - name: Smoke-test Unix package
+              if: runner.os != 'Windows'
+              shell: bash
+              run: |
+                  package_dir="dist/${{ matrix.package }}"
+                  output_dir="target/capi-package-smoke"
+                  mkdir -p "$output_dir"
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+                  read -r -a link_flags <<< "$(PKG_CONFIG_PATH="$package_dir/lib/pkgconfig" pkg-config --cflags --libs --static backbeat)"
 
-      - name: Set up Java
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
-        with:
-          distribution: temurin
-          java-version: "17"
+                  for source in store_info.c asset_read.c version.c; do
+                    name="${source%.c}"
+                    cc -std=c11 -Wall -Wextra -Werror \
+                      "rust/backbeat_c_sdk/c_examples/$source" "${link_flags[@]}" \
+                      -o "$output_dir/$name"
+                  done
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
-        with:
-          gradle-version: "8.10.2"
+                  c++ -std=c++17 -Wall -Wextra -Werror \
+                    rust/backbeat_c_sdk/c_examples/cpp_link.cpp "${link_flags[@]}" \
+                    -o "$output_dir/cpp_link"
+                  "$output_dir/version"
+                  "$output_dir/cpp_link"
+                  smoke_home="$(mktemp -d)"
+                  env HOME="$smoke_home" "$output_dir/store_info"
 
-      - name: Test and build Java SDK
-        run: gradle -p java test jar sourcesJar -PbackbeatVersion=0.5.0
+                  cmake -S rust/backbeat_c_sdk/c_examples -B "$output_dir/cmake" \
+                    -DCMAKE_PREFIX_PATH="$PWD/$package_dir"
+                  cmake --build "$output_dir/cmake"
+                  "$output_dir/cmake/version"
+                  "$output_dir/cmake/cpp_link"
 
-      - name: Upload Java SDK
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: backbeat-java-sdk-api
-          path: |
-            java/build/libs/backbeat-java-sdk-0.5.0.jar
-            java/build/libs/backbeat-java-sdk-0.5.0-sources.jar
-          archive: true
-          if-no-files-found: error
-          retention-days: 14
+            - name: Create Unix ZIP
+              if: runner.os != 'Windows'
+              shell: bash
+              run: |
+                  cd dist
+                  zip -r "${{ matrix.package }}.zip" "${{ matrix.package }}"
 
-  validate-image:
-    name: Build and smoke-test CLI image
-    if: ${{ !inputs.capi_only }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
+            - name: Stage and smoke-test Windows package
+              if: runner.os == 'Windows'
+              shell: cmd
+              run: |
+                  for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set "VS_INSTALL=%%i"
+                  call "%VS_INSTALL%\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+                  set "PACKAGE_DIR=dist\${{ matrix.package }}"
+                  set "OUTPUT_DIR=target\capi-package-smoke"
+                  set "LINK_LIBS=advapi32.lib bcrypt.lib kernel32.lib ntdll.lib ole32.lib shell32.lib userenv.lib ws2_32.lib msvcrt.lib"
+                  mkdir "%PACKAGE_DIR%\include"
+                  mkdir "%PACKAGE_DIR%\lib"
+                  mkdir "%PACKAGE_DIR%\lib\cmake"
+                  mkdir "%PACKAGE_DIR%\lib\cmake\Backbeat"
+                  mkdir "%OUTPUT_DIR%"
+                  copy "target\${{ matrix.target }}\release\backbeat.h" "%PACKAGE_DIR%\include\backbeat.h"
+                  copy "target\package-sqlite\include\sqlite3.h" "%PACKAGE_DIR%\include\sqlite3.h"
+                  copy "target\${{ matrix.target }}\release\${{ matrix.library }}" "%PACKAGE_DIR%\lib\${{ matrix.library }}"
+                  copy "target\package-sqlite\lib\sqlite3.lib" "%PACKAGE_DIR%\lib\sqlite3.lib"
+                  copy "rust\backbeat_c_sdk\cmake\BackbeatConfig.cmake" "%PACKAGE_DIR%\lib\cmake\Backbeat\BackbeatConfig.cmake"
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+                  set "LINK_LIBS=%PACKAGE_DIR%\lib\sqlite3.lib %LINK_LIBS%"
 
-      - name: Build CLI image
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
-        with:
-          context: .
-          file: docker/Dockerfile.backbeat-cli
-          platforms: linux/amd64
-          load: true
-          tags: backbeat-cli:ci
-          cache-from: type=gha,scope=backbeat-cli
-          cache-to: type=gha,mode=max,scope=backbeat-cli
+                  for %%s in (store_info asset_read version) do (
+                    cl /nologo /W4 /WX /MD /D_CRT_SECURE_NO_WARNINGS /I"%PACKAGE_DIR%\include" "rust\backbeat_c_sdk\c_examples\%%s.c" "%PACKAGE_DIR%\lib\${{ matrix.library }}" %LINK_LIBS% /Fe:"%OUTPUT_DIR%\%%s.exe" || exit /b 1
+                  )
+                  cl /nologo /W4 /WX /MD /EHsc /I"%PACKAGE_DIR%\include" "rust\backbeat_c_sdk\c_examples\cpp_link.cpp" "%PACKAGE_DIR%\lib\${{ matrix.library }}" %LINK_LIBS% /Fe:"%OUTPUT_DIR%\cpp_link.exe" || exit /b 1
+                  "%OUTPUT_DIR%\version.exe"
+                  "%OUTPUT_DIR%\cpp_link.exe"
+                  "%OUTPUT_DIR%\store_info.exe"
 
-      - name: Smoke-test CLI image
-        run: docker run --rm backbeat-cli:ci -V
+                  cmake -S rust\backbeat_c_sdk\c_examples -B "%OUTPUT_DIR%\cmake" -DCMAKE_PREFIX_PATH="%CD%\%PACKAGE_DIR%" || exit /b 1
+                  cmake --build "%OUTPUT_DIR%\cmake" --config Release || exit /b 1
+                  "%OUTPUT_DIR%\cmake\Release\version.exe" || exit /b 1
+                  "%OUTPUT_DIR%\cmake\Release\cpp_link.exe" || exit /b 1
 
-  publish:
-    name: Publish CLI image
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs:
-      - validate
-      - validate-image
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
-    permissions:
-      contents: read
-      packages: write
+            - name: Create Windows ZIP
+              if: runner.os == 'Windows'
+              shell: pwsh
+              run: Compress-Archive -Path "dist/${{ matrix.package }}" -DestinationPath "dist/${{ matrix.package }}.zip"
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+            - name: Stage Java native JAR
+              shell: bash
+              run: cp "java/build/libs/backbeat-java-sdk-0.5.0-${{ matrix.native_platform }}.jar" "dist/backbeat-java-sdk-0.5.0-${{ matrix.native_platform }}.jar"
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Upload package
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: ${{ matrix.package }}
+                  path: |
+                      dist/${{ matrix.package }}.zip
+                      dist/backbeat-java-sdk-0.5.0-${{ matrix.native_platform }}.jar
+                  archive: true
+                  if-no-files-found: error
+                  retention-days: 14
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+    java-sdk:
+        name: Java SDK
+        needs: validate
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
 
-      - name: Generate image metadata
-        id: metadata
-        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
-        with:
-          images: ghcr.io/${{ github.repository_owner }}/backbeat-cli
-          tags: |
-            type=raw,value=latest
-            type=sha,prefix=sha-,format=long
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - name: Build and push image
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
-        with:
-          context: .
-          file: docker/Dockerfile.backbeat-cli
-          platforms: linux/amd64
-          push: true
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-          cache-from: type=gha,scope=backbeat-cli
-          cache-to: type=gha,mode=max,scope=backbeat-cli
+            - name: Set up Java
+              uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+              with:
+                  distribution: temurin
+                  java-version: "17"
+
+            - name: Set up Gradle
+              uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
+              with:
+                  gradle-version: "8.10.2"
+
+            - name: Test and build Java SDK
+              run: gradle -p java test jar sourcesJar -PbackbeatVersion=0.5.0
+
+            - name: Upload Java SDK
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: backbeat-java-sdk-api
+                  path: |
+                      java/build/libs/backbeat-java-sdk-0.5.0.jar
+                      java/build/libs/backbeat-java-sdk-0.5.0-sources.jar
+                  archive: true
+                  if-no-files-found: error
+                  retention-days: 14
+
+    validate-image:
+        name: Build and smoke-test CLI image
+        if: ${{ !inputs.capi_only }}
+        runs-on: ubuntu-24.04
+        timeout-minutes: 45
+
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+            - name: Build CLI image
+              uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+              with:
+                  context: .
+                  file: docker/Dockerfile.backbeat-cli
+                  platforms: linux/amd64
+                  load: true
+                  tags: backbeat-cli:ci
+                  cache-from: type=gha,scope=backbeat-cli
+                  cache-to: type=gha,mode=max,scope=backbeat-cli
+
+            - name: Smoke-test CLI image
+              run: docker run --rm backbeat-cli:ci -V
+
+    publish:
+        name: Publish CLI image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        needs:
+            - validate
+            - validate-image
+        runs-on: ubuntu-24.04
+        timeout-minutes: 45
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+            - name: Log in to GitHub Container Registry
+              uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+            - name: Generate image metadata
+              id: metadata
+              uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+              with:
+                  images: ghcr.io/${{ github.repository_owner }}/backbeat-cli
+                  tags: |
+                      type=raw,value=latest
+                      type=sha,prefix=sha-,format=long
+
+            - name: Build and push image
+              uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+              with:
+                  context: .
+                  file: docker/Dockerfile.backbeat-cli
+                  platforms: linux/amd64
+                  push: true
+                  tags: ${{ steps.metadata.outputs.tags }}
+                  labels: ${{ steps.metadata.outputs.labels }}
+                  cache-from: type=gha,scope=backbeat-cli
+                  cache-to: type=gha,mode=max,scope=backbeat-cli
