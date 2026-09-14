@@ -1,5 +1,6 @@
 ---
 import logos from "@iconify-json/logos/icons.json";
+
 import SiteLayout from "../layouts/SiteLayout.astro";
 
 const platformIcons = {
@@ -60,11 +61,14 @@ const games = [
 			</header>
 
 			<section aria-label="Downloads" class="download-options">
-				<a class="download-option" href="#">
+				<a
+					class="download-option"
+					href="https://github.com/zkldi/backbeat/releases/download/v0.5.0/Backbeat_0.5.0_amd64.AppImage"
+				>
 					<span aria-hidden="true" class="download-logo download-logo-linux">
 						<svg
-							viewBox={`0 0 ${platformIcons.linux.width ?? logos.width} ${platformIcons.linux.height ?? logos.height}`}
 							set:html={platformIcons.linux.body}
+							viewBox={`0 0 ${platformIcons.linux.width ?? logos.width} ${platformIcons.linux.height ?? logos.height}`}
 						></svg>
 					</span>
 					<span class="download-option-copy">
@@ -74,11 +78,14 @@ const games = [
 					<span aria-hidden="true" class="download-arrow">↓</span>
 				</a>
 
-				<a class="download-option" href="#">
+				<a
+					class="download-option"
+					href="https://github.com/zkldi/backbeat/releases/download/v0.5.0/Backbeat_0.5.0_universal.dmg"
+				>
 					<span aria-hidden="true" class="download-logo download-logo-macos">
 						<svg
-							viewBox={`0 0 ${platformIcons.macos.width ?? logos.width} ${platformIcons.macos.height ?? logos.height}`}
 							set:html={platformIcons.macos.body}
+							viewBox={`0 0 ${platformIcons.macos.width ?? logos.width} ${platformIcons.macos.height ?? logos.height}`}
 						></svg>
 					</span>
 					<span class="download-option-copy">
@@ -88,11 +95,14 @@ const games = [
 					<span aria-hidden="true" class="download-arrow">↓</span>
 				</a>
 
-				<a class="download-option" href="#">
+				<a
+					class="download-option"
+					href="https://github.com/zkldi/backbeat/releases/download/v0.5.0/Backbeat_0.5.0_x64-setup.exe"
+				>
 					<span aria-hidden="true" class="download-logo download-logo-windows">
 						<svg
-							viewBox={`0 0 ${platformIcons.windows.width ?? logos.width} ${platformIcons.windows.height ?? logos.height}`}
 							set:html={platformIcons.windows.body}
+							viewBox={`0 0 ${platformIcons.windows.width ?? logos.width} ${platformIcons.windows.height ?? logos.height}`}
 						></svg>
 					</span>
 					<span class="download-option-copy">

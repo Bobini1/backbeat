@@ -114,7 +114,7 @@ jobs:
                     - runner: ubuntu-22.04
                       target: x86_64-unknown-linux-gnu
                       package: backbeat-c-sdk-x86_64-unknown-linux-gnu
-                      library: libbackbeat_c_sdk.a
+                      library: libbackbeat_c_sd	k.a
                       shared_library: libbackbeat_c_sdk.so
                       native_platform: linux-x86-64
         env:
