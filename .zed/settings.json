@@ -1,0 +1,62 @@
+{
+	"format_on_save": "on",
+ "languages": {
+		"JavaScript": {
+			"language_servers": [
+				"vtsls",
+				"biome",
+				"eslint"
+			],
+			"code_actions_on_format": {
+				"source.fixAll.eslint": true
+			}
+		},
+		"TypeScript": {
+			"language_servers": [
+				"vtsls",
+				"biome",
+				"eslint"
+			],
+			"code_actions_on_format": {
+				"source.fixAll.eslint": true
+			}
+		},
+		"TSX": {
+			"language_servers": [
+				"vtsls",
+				"biome",
+				"eslint"
+			],
+			"code_actions_on_format": {
+				"source.fixAll.eslint": true
+			}
+		},
+		"CSS": {
+			"language_servers": ["vtsls", "biome", "stylelint-lsp"],
+			"code_actions_on_format": {
+				"source.fixAll.stylelint": true
+			}
+		},
+		"Astro": {
+			"formatter":"language_server",
+			"language_servers": ["biome", "stylelint-lsp", "eslint", "vtsls", "astro-language-server"],
+			"code_actions_on_format": {
+				"source.fixAll.eslint": true,
+				"source.fixAll.stylelint": true,
+			}
+		}
+	},
+	"lsp": {
+		"stylelint-lsp": {
+			"settings": {
+				"stylelint": {
+					"validate": [
+						"css",
+						"html",
+						"astro"
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,58 @@
+[package]
+name = "backbeat_core"
+version = "0.5.0-beta"
+edition.workspace = true
+authors = ["zkldi <zkldi@proton.me>"]
+keywords = ["backbeat", "rhythm-game"]
+categories = []
+repository = "https://github.com/zkldi/backbeat"
+license = "GPL-3.0"
+description = "Core types and functionality for Backbeat."
+readme = "README.md"
+
+[features]
+default = ["fs_err"]
+fs_err = ["dep:fs-err"]
+sqlx = ["dep:sqlx"]
+
+[dependencies]
+regex = { workspace = true }
+# serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_with = { workspace = true }
+
+# error handling
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+# checksums
+sha2 = { workspace = true }
+hex = { workspace = true }
+
+# db
+sqlx = { workspace = true, optional = true }
+
+# compression + encoding
+flate2 = { workspace = true }
+tar = { workspace = true }
+zip = { workspace = true }
+base64-simd = { workspace = true }
+
+# utilities
+derive_more = { workspace = true, features = ["display", "from", "from_str"] }
+
+# optional
+fs-err = { workspace = true, optional = true }
+
+chrono = { workspace = true, features = ["serde"] }
+tinyfilter = { workspace = true }
+md-5.workspace = true
+
+[dev-dependencies]
+
+[package.metadata.cargo-machete]
+ignored = ["md-5"]
+
+[lints]
+workspace = true

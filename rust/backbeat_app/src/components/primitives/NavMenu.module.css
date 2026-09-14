@@ -1,0 +1,87 @@
+.nav {
+	display: flex;
+	flex: 1 0 0%;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+/* Icon is offset by the indicator,
+ * override the section heading padding to compensate */
+.section .sectionHeading {
+	/* item gap + padding */
+	padding: 0.25rem calc(0.25rem + 0.5rem);
+}
+
+.itemList {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+
+	margin: 0;
+	padding: 0;
+
+	list-style: none;
+}
+
+.item {
+	display: flex;
+	flex-direction: row;
+	gap: 0.5rem;
+	align-items: center;
+
+	padding: 0.25rem 0;
+	border-radius: var(--radius-sm);
+
+	color: var(--c-subtext-1);
+	text-decoration: none;
+
+	transition: 50ms ease-out;
+	transition-property: background-color, color;
+}
+
+.item:hover {
+	color: var(--c-text);
+	background: var(--c-base-tinted);
+}
+
+.item[aria-current="page"],
+.item[data-nested="true"] {
+	color: var(--c-text);
+}
+
+.itemIcon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	color: inherit;
+
+	transition: color 50ms ease-out;
+}
+
+.itemIcon:is(.item[aria-current="page"] .itemIcon),
+.itemIcon:is(.item[data-nested="true"] .itemIcon) {
+	color: var(--c-accent);
+}
+
+.itemIndicator {
+	display: block;
+	align-self: stretch;
+
+	width: 0.125rem;
+
+	background-color: transparent;
+
+	transition: background-color 50ms ease-out;
+}
+
+.itemIndicator:is(.item[aria-current="page"] .itemIndicator),
+.itemIndicator:is(.item[data-nested="true"] .itemIndicator) {
+	background-color: var(--c-accent);
+}
+
+.itemLabel {
+	font-size: 0.85rem;
+	font-weight: 600;
+	line-height: 1;
+}

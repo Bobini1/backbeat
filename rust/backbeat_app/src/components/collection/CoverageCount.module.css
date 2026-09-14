@@ -1,0 +1,14 @@
+.count {
+	display: inline-flex;
+	gap: 0.5rem;
+	align-items: center;
+	font-size: 0.8rem;
+}
+
+.count[data-status="missing"] {
+	color: var(--c-text-danger);
+}
+
+.count[data-status="installed"] {
+	color: var(--c-text-success);
+}

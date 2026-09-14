@@ -1,0 +1,9 @@
+.downloadStatus {
+	display: flex;
+	flex-direction: column;
+	font-size: 0.7rem;
+}
+
+.downloadCount {
+	font-size: 0.6rem;
+}

@@ -1,0 +1,78 @@
+.banner {
+	--banner-bg: var(--c-base);
+	--banner-border: var(--c-base-border);
+	--banner-text: var(--text);
+	--banner-progress: var(--c-accent);
+
+	position: relative;
+
+	display: flex;
+	place-content: space-between;
+	place-items: center;
+
+	padding: 0.5rem;
+	border: 1px solid var(--banner-border);
+
+	font-size: 0.8rem;
+	color: var(--banner-text);
+
+	background-color: var(--banner-bg);
+}
+
+.progress {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+
+	width: 100%;
+	height: 2px;
+
+	background-color: transparent;
+}
+
+.progress[value] {
+	appearance: none;
+}
+
+.progress[value]::-webkit-progress-bar {
+	background-color: transparent;
+}
+
+.progress[value]::-webkit-progress-value {
+	background-color: var(--banner-progress);
+}
+
+.banner[data-variant="accent"] {
+	--banner-bg: var(--c-surface-accent-0);
+	--banner-border: var(--c-surface-accent-border-0);
+	--banner-text: var(--c-text-accent);
+	--banner-progress: var(--c-accent);
+}
+
+.banner[data-variant="success"] {
+	--banner-bg: var(--c-surface-success-0);
+	--banner-border: var(--c-surface-success-border-0);
+	--banner-text: var(--c-text-success);
+	--banner-progress: var(--c-success);
+}
+
+.banner[data-variant="danger"] {
+	--banner-bg: var(--c-surface-danger-0);
+	--banner-border: var(--c-surface-danger-border-0);
+	--banner-text: var(--c-text-danger);
+	--banner-progress: var(--c-danger);
+}
+
+.banner[data-variant="warning"] {
+	--banner-bg: var(--c-surface-warning-0);
+	--banner-border: var(--c-surface-warning-border-0);
+	--banner-text: var(--c-text-warning);
+	--banner-progress: var(--c-warning);
+}
+
+.banner[data-variant="surface"] {
+	--banner-bg: var(--c-surface-0);
+	--banner-border: var(--c-surface-border-0);
+	--banner-text: var(--c-text);
+	--banner-progress: var(--c-surface-0-tinted);
+}

@@ -1,0 +1,10 @@
+:where(.link) {
+	display: inline;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+:where(.link):hover {
+	color: var(--c-accent);
+}

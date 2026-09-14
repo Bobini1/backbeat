@@ -1,0 +1,25 @@
+/* Shared search box + pagination footer used by Charts and Assets. */
+
+.search-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.search-toolbar > input {
+	flex: 1 1 12rem;
+	min-width: 10rem;
+	margin-bottom: 0;
+}
+
+.search-summary {
+	margin: 0;
+	font-size: 0.82rem;
+	color: var(--c-subtext-0);
+}
+
+.search-list-footer {
+	display: flex;
+	justify-content: center;
+}

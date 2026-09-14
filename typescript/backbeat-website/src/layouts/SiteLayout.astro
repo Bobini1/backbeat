@@ -1,0 +1,145 @@
+---
+import "../styles/site.css";
+
+interface Props {
+	description: string;
+	title: string;
+}
+
+const { description, title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta content="width=device-width" name="viewport">
+		<meta content={description} name="description">
+		<link href="/favicon.svg" rel="icon" type="image/svg+xml">
+		<title>{title}</title>
+		<script is:inline>
+		(function () {
+			let preference = "system";
+			try {
+				const stored = localStorage.getItem("backbeat.theme");
+				if (stored === "light" || stored === "dark") {
+					preference = stored;
+				}
+			} catch {
+				// localStorage may be unavailable.
+			}
+			const systemDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+			document.documentElement.dataset.theme =
+				preference === "system" ? (systemDark ? "dark" : "light") : preference;
+		})();
+		</script>
+	</head>
+	<body>
+		<header class="site-header">
+			<div class="site-header-inner">
+				<a class="brand" href="/">
+					<span>Backbeat</span>
+				</a>
+				<div class="site-header-actions">
+					<nav aria-label="Main navigation">
+						<a href="/docs/">Docs</a>
+						<a href="/get-started">Get Started</a>
+					</nav>
+					<details class="theme-picker">
+						<summary aria-label="Choose color theme" title="Color theme">
+							<svg aria-hidden="true" viewBox="0 0 24 24">
+								<circle cx="12" cy="12" r="3.5"></circle>
+								<path
+									d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"
+								></path>
+							</svg>
+						</summary>
+						<div aria-label="Color theme" class="theme-options" role="radiogroup">
+							<button
+								aria-checked="false"
+								data-theme-preference="system"
+								role="radio"
+								type="button"
+							>
+								System
+							</button>
+							<button
+								aria-checked="false"
+								data-theme-preference="light"
+								role="radio"
+								type="button"
+							>
+								Light
+							</button>
+							<button
+								aria-checked="false"
+								data-theme-preference="dark"
+								role="radio"
+								type="button"
+							>
+								Dark
+							</button>
+						</div>
+					</details>
+				</div>
+			</div>
+		</header>
+		<slot />
+		<footer class="site-footer">
+			<a href="https://github.com/zkldi">made with love by zk</a>
+		</footer>
+		<script>
+		const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+		const themeButtons =
+			document.querySelectorAll<HTMLButtonElement>("[data-theme-preference]");
+
+		function readThemePreference(): "dark" | "light" | "system" {
+			try {
+				const stored = localStorage.getItem("backbeat.theme");
+				if (stored === "dark" || stored === "light" || stored === "system") {
+					return stored;
+				}
+			} catch {
+				// localStorage may be unavailable.
+			}
+			return "system";
+		}
+
+		function applyTheme(preference: "dark" | "light" | "system") {
+			const effective =
+				preference === "system" ? (themeMedia.matches ? "dark" : "light") : preference;
+			document.documentElement.dataset.theme = effective;
+			for (const button of themeButtons) {
+				button.setAttribute(
+					"aria-checked",
+					String(button.dataset.themePreference === preference),
+				);
+			}
+		}
+
+		for (const button of themeButtons) {
+			button.addEventListener("click", () => {
+				const preference = button.dataset.themePreference;
+				if (preference !== "dark" && preference !== "light" && preference !== "system") {
+					return;
+				}
+				try {
+					localStorage.setItem("backbeat.theme", preference);
+				} catch {
+					// The selected theme still applies for this page.
+				}
+				applyTheme(preference);
+				button.closest("details")?.removeAttribute("open");
+			});
+		}
+
+		themeMedia.addEventListener("change", () => {
+			if (readThemePreference() === "system") {
+				applyTheme("system");
+			}
+		});
+		applyTheme(readThemePreference());
+		</script>
+		<script src="../code-tabs.ts"></script>
+	</body>
+</html>

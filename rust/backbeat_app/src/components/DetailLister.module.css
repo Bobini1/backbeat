@@ -1,0 +1,64 @@
+.list,
+.item {
+	display: flex;
+	flex-direction: column;
+}
+
+.item {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+
+	height: 100%;
+	padding: 0.5rem;
+	border: 1px solid var(--c-base-border);
+
+	background-color: var(--c-base);
+}
+
+.item:hover {
+	background-color: var(--c-base-tinted);
+}
+
+.item:not(.container:last-child .item) {
+	border-bottom: 0;
+}
+
+.container {
+	display: contents;
+}
+
+.main {
+	overflow: hidden;
+	display: flex;
+	gap: 0.125rem;
+	place-content: space-between;
+	align-items: safe center;
+
+	min-width: 0;
+}
+
+.content {
+	overflow: hidden;
+	display: block;
+	flex: 1 1 auto;
+
+	min-width: 0;
+
+	color: var(--c-subtext-1);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.detail {
+	display: flex;
+	flex: 0 0 auto;
+	place-items: center;
+
+	font-size: 0.875rem;
+	font-weight: 500;
+}
+
+.content {
+	font-size: 0.875rem;
+}

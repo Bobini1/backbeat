@@ -1,0 +1,54 @@
+# mdbook build output
+book/
+
+.backbeat/
+
+# rust compile artifacts
+target
+rust/backbeat_c_sdk/include/backbeat.h
+java/.gradle/
+java/build/
+
+# env stuff
+*.env
+
+!*.example.*
+*.local
+
+# allow .local.env
+!.local.env
+!.test.env
+!.ci.env
+
+flamegraph.svg
+
+rust/backbeat_sdk/template.backbeat.db
+rust/backbeat_sdk/template.backbeat.db-wal
+rust/backbeat_sdk/template.backbeat.db-shm
+
+# for me
+
+
+.fuse_test
+.e2e-benches/mount-performance/results/
+!fixtures
+!fixtures/backbeat
+!fixtures/charts
+
+site/
+
+docker/localserver/data/
+
+# backbeat_app frontend (bun/vite)
+rust/backbeat_app/dist/
+rust/backbeat_app/src-tauri/gen/schemas/
+
+# node / typescript
+node_modules/
+typescript/**/.vite-cache/
+typescript/**/test-results/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+.scratchspace/

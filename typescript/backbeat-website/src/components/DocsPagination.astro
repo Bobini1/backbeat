@@ -1,0 +1,29 @@
+---
+import { documentationPages } from "../docs-navigation";
+
+interface Props {
+	currentId: string;
+}
+
+const { currentId } = Astro.props;
+const currentIndex = documentationPages.findIndex((item) => item.id === currentId);
+const previous = currentIndex > 0 ? documentationPages[currentIndex - 1] : undefined;
+const next = currentIndex >= 0 ? documentationPages[currentIndex + 1] : undefined;
+---
+
+{(previous || next) && (
+		<nav aria-label="Documentation pages" class="docs-pagination">
+			{previous && (
+				<a class="docs-pagination-link docs-pagination-previous" href={previous.href}>
+					<span class="docs-pagination-direction">← Previous</span>
+					<span class="docs-pagination-title">{previous.label}</span>
+				</a>
+			)}
+			{next && (
+				<a class="docs-pagination-link docs-pagination-next" href={next.href}>
+					<span class="docs-pagination-direction">Next →</span>
+					<span class="docs-pagination-title">{next.label}</span>
+				</a>
+			)}
+		</nav>
+	)}

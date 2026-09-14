@@ -1,0 +1,65 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+
+import DocsNavigation from "../../components/DocsNavigation.astro";
+import DocsPagination from "../../components/DocsPagination.astro";
+import TableOfContents from "../../components/TableOfContents.astro";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+
+export async function getStaticPaths() {
+	const docs = (await getCollection("docs")).filter(
+		(entry) => entry.id !== "summary" && entry.body?.trim(),
+	);
+	return docs.map((entry) => ({
+		params: { slug: entry.id === "index" ? undefined : entry.id },
+		props: { entry },
+	}));
+}
+
+interface Props {
+	entry: CollectionEntry<"docs">;
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const tableOfContents = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const title = typeof entry.data.title === "string" ? entry.data.title : "Backbeat docs";
+---
+
+<SiteLayout
+	description={`${title ?? "Backbeat"} — Backbeat documentation`}
+	title={title ? `${title} · Backbeat docs` : "Backbeat docs"}
+>
+	<div class="docs-shell">
+		<aside class="docs-sidebar docs-sidebar-left">
+			<p class="docs-sidebar-title">Documentation</p>
+			<DocsNavigation currentId={entry.id} />
+		</aside>
+
+		<div class="docs-mobile-tools">
+			<details>
+				<summary>Documentation</summary>
+				<DocsNavigation currentId={entry.id} />
+			</details>
+			{tableOfContents.length > 0 && (
+					<details>
+						<summary>On this page</summary>
+						<TableOfContents headings={tableOfContents} />
+					</details>
+				)}
+		</div>
+
+		<main class="docs">
+			{title && <h1>{title}</h1>}
+			<Content />
+			<DocsPagination currentId={entry.id} />
+		</main>
+
+		{tableOfContents.length > 0 && (
+				<aside class="docs-sidebar docs-sidebar-right">
+					<p class="docs-sidebar-title">On this page</p>
+					<TableOfContents headings={tableOfContents} />
+				</aside>
+			)}
+	</div>
+</SiteLayout>

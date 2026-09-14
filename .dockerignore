@@ -1,0 +1,29 @@
+target/
+.git/
+.github/
+.cursor/
+.impeccable/
+**/.DS_Store
+
+# Local configuration, data, and secrets.
+.backbeat/
+docker/localserver/
+.env
+.env.*
+**/.env
+**/.env.*
+**/*.env
+
+# Generated frontend output and installed dependencies.
+node_modules/
+**/node_modules/
+rust/backbeat_app/dist/
+
+# Unused content and integration tooling.
+charts/
+scripts/
+.scripts/
+.smokes/
+.e2e-benches/
+.downloaders/
+tests/bcs-spec/charts/

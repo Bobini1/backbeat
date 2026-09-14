@@ -1,0 +1,36 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"formatter": {
+		"indentStyle": "tab",
+		"lineWidth": 100,
+		"indentWidth": 4
+	},
+	"files": {
+		"includes": [
+			"typescript/**",
+			"package.json",
+			"biome.json",
+			"tsconfig.base.json",
+			"rust/backbeat_app/src/**",
+			"rust/backbeat_vf_app/src/**"
+		],
+		"maxSize": 67108864
+	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"linter": {
+		"enabled": false
+	},
+	"assist": {
+		"enabled": false
+	},
+	"html": {
+		"experimentalFullSupportEnabled": true,
+		"formatter": {
+			"enabled": true
+		}
+	}
+}

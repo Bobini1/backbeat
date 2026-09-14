@@ -1,0 +1,39 @@
+.dot {
+	flex-shrink: 0;
+
+	width: 0.6rem;
+	height: 0.6rem;
+	margin: 3px;
+	border-radius: 999px;
+
+	background-color: var(--dot-status, --c-subtext-1);
+	box-shadow: 0 0 0 3px var(--dot-ring, --c-text-faded);
+}
+
+.label {
+	display: inline-flex;
+	gap: 0.5rem;
+	align-items: center;
+
+	min-width: 0;
+
+	color: var(--dot-text, var(--c-subtext-1));
+}
+
+:where(.dot, .label)[data-status="success"] {
+	--dot-status: var(--c-success);
+	--dot-ring: var(--c-success-faded);
+	--dot-text: var(--c-text-success);
+}
+
+:where(.dot, .label)[data-status="danger"] {
+	--dot-status: var(--c-danger);
+	--dot-ring: var(--c-danger-faded);
+	--dot-text: var(--c-text-danger);
+}
+
+:where(.dot, .label)[data-status="warning"] {
+	--dot-status: var(--c-warning);
+	--dot-ring: var(--c-warning-faded);
+	--dot-text: var(--c-text-warning);
+}

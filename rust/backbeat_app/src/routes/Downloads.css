@@ -1,0 +1,203 @@
+.download-loading {
+	padding: 0.5rem 0;
+	font-size: 0.85rem;
+	color: var(--c-subtext-0);
+}
+
+.download-summary {
+	display: grid;
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+	gap: 0.75rem;
+	margin-bottom: 1.25rem;
+}
+
+.download-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--c-base-border);
+
+	background-color: var(--c-base);
+}
+
+.download-stat-value {
+	font-size: 1.5rem;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--c-text);
+}
+
+.download-stat-label {
+	font-size: 0.72rem;
+	font-weight: 600;
+	color: var(--c-subtext-0);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.download-stat-failed .download-stat-value {
+	color: var(--c-text-danger);
+}
+
+.download-stat-failed {
+	border-color: var(--c-surface-danger-border-0);
+}
+
+.download-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.download-row {
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+
+	padding: 0.65rem 0.85rem;
+	border: 1px solid var(--c-base-border);
+
+	background-color: var(--c-base);
+}
+
+.download-row-failed {
+	border-color: var(--c-surface-danger-border-0);
+}
+
+.download-row-error {
+	margin: 0;
+
+	font-size: 0.78rem;
+	line-height: 1.4;
+	color: var(--c-text-danger);
+	word-break: break-word;
+}
+
+.download-row-main {
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
+	justify-content: space-between;
+
+	min-width: 0;
+}
+
+.download-row-info {
+	display: flex;
+	flex: 1;
+	gap: 0.6rem;
+	align-items: center;
+
+	min-width: 0;
+}
+
+.download-kind {
+	flex-shrink: 0;
+
+	padding: 0.15rem 0.4rem;
+	border: 1px solid var(--c-base-border);
+
+	font-size: 0.68rem;
+	font-weight: 700;
+	color: var(--c-subtext-0);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.download-target {
+	overflow: hidden;
+	flex: 1;
+
+	min-width: 0;
+
+	font-family: var(--font-mono);
+	font-size: 0.82rem;
+	color: var(--c-text);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.download-target-description {
+	font-family: inherit;
+}
+
+.download-status {
+	flex-shrink: 0;
+
+	padding: 0.15rem 0.4rem;
+
+	font-size: 0.72rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.download-status-active {
+	border: 1px solid var(--c-surface-border-0);
+	color: var(--c-text);
+	background-color: var(--c-base-shaded);
+}
+
+.download-status-done {
+	border: 1px solid var(--c-surface-success-border-0);
+	color: var(--c-text-success);
+	background-color: var(--c-surface-success-0);
+}
+
+.download-status-bad {
+	border: 1px solid var(--c-surface-danger-border-0);
+	color: var(--c-text-danger);
+	background-color: var(--c-surface-danger-0);
+}
+
+.download-progress-row {
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
+	min-width: 0;
+}
+
+.download-progress-track {
+	overflow: hidden;
+	flex: 1;
+
+	height: 0.35rem;
+	border: 1px solid var(--c-surface-border-0);
+
+	background-color: var(--c-surface-0);
+}
+
+.download-progress-bar {
+	height: 100%;
+	background-color: var(--c-accent);
+	transition: width 0.2s ease-out;
+}
+
+.download-bytes {
+	flex-shrink: 0;
+
+	min-width: 0;
+
+	font-size: 0.75rem;
+	font-variant-numeric: tabular-nums;
+	color: var(--c-subtext-0);
+}
+
+@media (width <= 640px) {
+	.download-summary {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.download-row-info {
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+
+	.download-target {
+		flex: none;
+		order: 3;
+		width: 100%;
+	}
+}

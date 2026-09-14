@@ -1,0 +1,120 @@
+.gamemode-filter {
+	position: relative;
+	flex-shrink: 0;
+}
+
+.gamemode-filter-trigger {
+	cursor: pointer;
+
+	display: inline-flex;
+	gap: 0.45rem;
+	align-items: center;
+
+	min-height: 2.05rem;
+	padding: 0.3rem 0.5rem 0.3rem 0.4rem;
+	border: 1px solid var(--c-base-border);
+	border-radius: var(--radius-sm);
+
+	font: inherit;
+	color: var(--c-text);
+
+	background: var(--c-base);
+
+	transition:
+		background-color 0.12s ease,
+		border-color 0.12s ease,
+		color 0.12s ease;
+}
+
+.gamemode-filter-trigger:hover {
+	background: var(--c-base-shaded);
+}
+
+.gamemode-filter-trigger:focus-visible,
+.gamemode-filter-menu:focus-visible {
+	outline: 2px solid var(--c-accent);
+	outline-offset: -1px;
+}
+
+.gamemode-filter-placeholder {
+	padding: 0 0.15rem;
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: var(--c-subtext-0);
+}
+
+.gamemode-filter-chevron {
+	margin-left: 0.1rem;
+	font-size: 0.65rem;
+	line-height: 1;
+	color: var(--c-subtext-1);
+}
+
+.gamemode-filter-menu {
+	position: absolute;
+	z-index: 40;
+	top: calc(100% + 0.25rem);
+	right: 0;
+
+	overflow: auto;
+
+	width: max-content;
+	min-width: min(15.5rem, calc(100vw - 2rem));
+	max-width: min(22rem, calc(100vw - 2rem));
+	max-height: 17rem;
+	padding: 0.35rem;
+	border: 1px solid var(--c-base-border);
+	border-radius: var(--radius-sm);
+
+	background: var(--c-base);
+}
+
+.gamemode-filter-all {
+	cursor: pointer;
+
+	width: 100%;
+	margin-bottom: 0.3rem;
+	padding: 0.35rem 0.45rem;
+	border: 1px solid transparent;
+	border-radius: var(--radius-sm);
+
+	font: inherit;
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: var(--c-subtext-0);
+	text-align: left;
+
+	background: transparent;
+}
+
+.gamemode-filter-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem;
+}
+
+.gamemode-filter-option {
+	cursor: pointer;
+
+	display: inline-flex;
+
+	margin: 0;
+	padding: 0;
+	border: none;
+
+	appearance: none;
+}
+
+.gamemode-filter-option:hover,
+.gamemode-filter-option[data-active="true"] {
+	background: var(--c-base-shaded);
+}
+
+.gamemode-filter-option[data-selected="true"] {
+	border-color: var(--c-accent);
+	background: var(--c-base-shaded);
+}
+
+.gamemode-filter-all[data-selected="true"] {
+	color: var(--c-text);
+}

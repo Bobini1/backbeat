@@ -1,0 +1,18 @@
+.badge {
+	flex-shrink: 0;
+
+	font-size: 0.72rem;
+	font-weight: 600;
+	color: var(--c-subtext-0);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.badge[data-status="update"] {
+	color: var(--c-text-warning);
+}
+
+.badge[data-available="false"],
+.badge[data-status="checking"] {
+	color: var(--c-subtext-1);
+}

@@ -1,0 +1,186 @@
+.download-toast-stack {
+	pointer-events: none;
+	display: flex;
+	flex-direction: column-reverse;
+	gap: 0.5rem;
+}
+
+/* Toast Lift is the one shadow-bearing surface in the system (DESIGN.md §4).
+   State is conveyed by a leading status indicator + a full 1px status-color
+   border and tinted fill on the variant — never by a side-stripe. */
+.download-toast {
+	pointer-events: auto;
+
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+
+	padding: 0.6rem 0.75rem;
+	border: 1px solid var(--c-base-border);
+	border-radius: 0;
+
+	background: var(--c-base);
+	box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
+
+	animation: download-toast-in 0.16s ease-out;
+}
+
+.download-toast.download-toast-ok {
+	border-color: var(--c-success);
+	background:
+		linear-gradient(var(--c-base), var(--c-base)) padding-box,
+		var(--c-success-shaded) border-box;
+}
+
+.download-toast.download-toast-failed {
+	border-color: var(--c-danger);
+	background:
+		linear-gradient(var(--c-base), var(--c-base)) padding-box,
+		var(--c-danger-shaded) border-box;
+}
+
+.download-toast-head {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	min-width: 0;
+}
+
+.download-toast-title {
+	flex: 1;
+	min-width: 0;
+	font-size: 0.85rem;
+	color: var(--c-text);
+}
+
+.download-toast-dismiss {
+	cursor: pointer;
+
+	display: inline-flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+
+	width: 1.25rem;
+	height: 1.25rem;
+	padding: 0;
+	border: none;
+
+	font-size: 1rem;
+	line-height: 1;
+	color: var(--c-subtext-0);
+
+	background: transparent;
+}
+
+.download-toast-dismiss:hover {
+	color: var(--c-text);
+}
+
+.download-toast-target {
+	font-family: var(--font-mono);
+	font-size: 0.8rem;
+	color: var(--c-subtext-0);
+	word-break: break-all;
+}
+
+.download-toast-status {
+	font-size: 0.75rem;
+	color: var(--c-subtext-0);
+}
+
+.download-toast-error {
+	margin-top: 0.15rem;
+	font-size: 0.75rem;
+	color: var(--danger);
+	word-break: break-word;
+}
+
+/* Leading status indicator: a StatusDot-style circle + halo for terminal
+   states. The spinner handles `started`. */
+.download-toast-dot {
+	flex-shrink: 0;
+
+	width: 0.6rem;
+	height: 0.6rem;
+	border-radius: 50%;
+
+	background: var(--c-subtext-1);
+}
+
+.download-toast-dot-ok {
+	background: var(--c-success);
+	box-shadow: 0 0 0 3px var(--c-success-shaded);
+}
+
+.download-toast-dot-failed {
+	background: var(--c-danger);
+	box-shadow: 0 0 0 3px var(--c-danger-shaded);
+}
+
+.download-toast-spinner {
+	flex-shrink: 0;
+
+	width: 0.7rem;
+	height: 0.7rem;
+	border: 2px solid var(--c-accent-surface-border-1);
+	border-top-color: var(--c-accent);
+	border-radius: 50%;
+
+	animation: download-toast-spin 0.7s linear infinite;
+}
+
+.download-toast-retry {
+	cursor: pointer;
+
+	align-self: flex-start;
+
+	margin-top: 0.3rem;
+	padding: 0.25rem 0.6rem;
+	border: 1px solid var(--c-base-border);
+	border-radius: 0;
+
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: var(--c-text);
+
+	background: transparent;
+}
+
+.download-toast-retry:hover:not(:disabled) {
+	border-color: var(--c-accent-shaded);
+	color: var(--c-accent-shaded);
+}
+
+.download-toast-retry:disabled {
+	cursor: default;
+	opacity: 0.5;
+}
+
+@keyframes download-toast-in {
+	from {
+		transform: translateY(0.5rem);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+@keyframes download-toast-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.download-toast {
+		animation: none;
+	}
+
+	.download-toast-spinner {
+		animation: none;
+	}
+}

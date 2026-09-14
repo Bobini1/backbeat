@@ -1,0 +1,18 @@
+{
+	"extends": [
+		"stylelint-config-standard",
+		"stylelint-config-clean-order",
+		"@css-modules-kit/stylelint-plugin/recommended"
+	],
+	"plugins": ["stylelint-order"],
+	"files": ["src/**/*.css"],
+	"ignoreFiles": ["**/node_modules/**", "src-tauri/**"],
+	"overrides": [
+		{
+			"files": ["**/*.module.css"],
+			"rules": {
+				"selector-class-pattern": "^[a-z][a-zA-Z0-9]+$"
+			}
+		}
+	]
+}

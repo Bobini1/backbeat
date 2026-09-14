@@ -1,0 +1,124 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+---
+
+<SiteLayout
+	description="Download Backbeat and use one chart library across supported rhythm game clients."
+	title="Backbeat"
+>
+	<main class="home">
+		<section class="intro">
+			<h1>
+				<span>Backbeat</span>
+			</h1>
+			<p class="intro-definition">
+				Backbeat is a tool that makes getting rhythm game charts, difficulty tables, packs
+				and courses <b>easy</b>.
+			</p>
+			<div class="intro-actions">
+				<a class="download" href="/get-started">Get Started</a>
+				<a class="transparent-button" href="/docs/">Developer Docs</a>
+			</div>
+		</section>
+
+		<section class="what-section" id="what-is-backbeat">
+			<header class="section-heading">
+				<h2>What is Backbeat?</h2>
+				<p>
+					You can think of Backbeat as a special "Songs/" folder on your computer, that
+					all games can read from.
+					<br>
+					Backbeat works <b>for any rhythm game</b>. It's not locked down to any specific
+					game.
+					<br>
+					Get the app, download some content, and download a rhythm game with support for
+					Backbeat!
+				</p>
+			</header>
+		</section>
+
+		<section class="why-section" id="why">
+			<header class="section-heading">
+				<h2>Why Backbeat?</h2>
+			</header>
+			<dl class="why-points">
+				<div>
+					<dt>It doesn't suck</dt>
+					<dd>
+						There's no "extract the zip in korean locale", "put this folder at exactly
+						this position" or "ensure the stars are aligned in your bms folder".
+						<br>
+						<br>
+						No more. You ask for a chart, a pack, a table, a dan course - and you get
+						it.
+					</dd>
+				</div>
+				<div>
+					<dt>It's faster and lighter</dt>
+					<dd>
+						Backbeat doesn't download duplicates of files. This saves storage space
+						{" "}<i>and</i>{" "}
+						download times!
+						<br>
+						<br>
+						You can go from an empty store to a full BMS install of every table in
+						{" "}<i>just one hour</i>, and downloading new charts doesn't require you to
+						re-download files you already have.
+					</dd>
+				</div>
+				<div>
+					<dt>It's not a centralised server</dt>
+					<dd>
+						Anyone can host a backbeat server. It's trivial. It's designed in such a way
+						that you can add servers <i>you don't trust</i>, and can still be sure that
+						you got the right content.
+						<br>
+						<br>
+						Content on Backbeat doesn't go missing, it doesn't get shutterstock'd, and
+						it can't bitrot over the years.
+					</dd>
+				</div>
+				<div>
+					<dt>It's game-agnostic</dt>
+					<dd>
+						Backbeat has no game-specific logic. It works for every game ever made, and
+						every game that ever will be made.
+					</dd>
+				</div>
+				<div>
+					<dt>It has cool features</dt>
+					<dd>
+						Games that integrate backbeat get native difficulty tables, which are a fun
+						way of assigning difficulties to chart without the woes of a difficulty
+						calculator.
+						<br>
+						<br>
+						You also get packs and courses!
+					</dd>
+				</div>
+				<div>
+					<dt>It's easy to integrate</dt>
+					<dd>
+						It's a well documented SDK with no moving parts. There's no service to run
+						on your computer, no additional config. You launch a game with backbeat
+						support and the user doesn't even need to know about it.
+						<br>
+						<br>
+						You can just think of it as a managed <code>Songs/</code> folder on
+						steroids.
+					</dd>
+				</div>
+			</dl>
+		</section>
+
+		<section class="get-started-section">
+			<a class="get-started-banner" href="/get-started">
+				<span class="get-started-banner-copy">
+					<strong>Get started with Backbeat</strong>
+					<span>Download the app, download some content, and do some gaming.</span>
+				</span>
+				<span aria-hidden="true" class="get-started-banner-arrow">↗</span>
+			</a>
+		</section>
+	</main>
+</SiteLayout>

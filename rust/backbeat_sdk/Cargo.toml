@@ -1,0 +1,60 @@
+[package]
+name = "backbeat_sdk"
+version = "0.5.0-beta"
+edition.workspace = true
+authors = ["zkldi <zkldi@proton.me>"]
+keywords = ["backbeat", "rhythm-game"]
+categories = []
+repository = "https://github.com/zkldi/backbeat"
+license = "GPL-3.0"
+readme = "README.md"
+description = "The library for interfacing with Backbeat."
+
+[features]
+test-util = []
+
+[dependencies]
+backbeat_core = { workspace = true, features = ["sqlx"] }
+backbeat_store_config = { workspace = true }
+
+# database
+sqlx = { workspace = true }
+
+# error handling
+thiserror = { workspace = true }
+
+# serialization (for JSON deserialization in import/export)
+serde_json = { workspace = true }
+
+# filesystem
+fs-err = { workspace = true }
+
+# async
+tokio = { workspace = true }
+futures = { workspace = true }
+futures-lite = { workspace = true }
+dashmap = { workspace = true }
+parking_lot = { workspace = true }
+tracing = { workspace = true }
+
+# http client (for server_* methods)
+reqwest = { workspace = true, features = ["json"] }
+bytes = { workspace = true }
+url = { workspace = true }
+serde = { workspace = true }
+chrono = { workspace = true, features = ["serde"] }
+derive_more.workspace = true
+backbeat_server_client.workspace = true
+tokio-util = { workspace = true, features = ["io-util", "rt"] }
+uuid = { workspace = true, features = ["v4"] }
+
+[dev-dependencies]
+backbeat_inspector.workspace = true
+sqlx = { workspace = true, features = ["sqlite"] }
+tokio = { workspace = true }
+flate2 = { workspace = true }
+tar = { workspace = true }
+tempfile = { workspace = true }
+
+[lints]
+workspace = true

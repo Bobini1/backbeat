@@ -1,0 +1,11 @@
+.content {
+	display: flex;
+	flex-flow: column;
+	gap: 0.5rem;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}

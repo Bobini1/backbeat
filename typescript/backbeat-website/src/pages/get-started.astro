@@ -1,0 +1,152 @@
+---
+import logos from "@iconify-json/logos/icons.json";
+import SiteLayout from "../layouts/SiteLayout.astro";
+
+const platformIcons = {
+	linux: logos.icons["linux-tux"],
+	macos: logos.icons.apple,
+	windows: logos.icons["microsoft-windows-icon"],
+};
+
+const servers = [
+	{
+		description: "The largest rhythm game chart database. Hosted in the EU.",
+		flag: "🇪🇺",
+		flagLabel: "European Union",
+		href: "https://makiba.ac",
+		name: "Makiba",
+	},
+	{
+		description: "Why not host your own server? It's easy!",
+		flag: "?",
+		name: "Your server here...",
+		href: "/docs/devs/running-a-server/",
+	},
+];
+
+const games = [
+	{
+		description: "",
+		href: "https://github.com/zkldi/lr2oraja-endlessdream-bkb",
+		name: "lr2oraja Endless Dream",
+	},
+	{
+		description: "",
+		href: "https://github.com/zkldi/unnamed-sdvx-clone-bkb",
+		name: "Unnamed SDVX Clone",
+	},
+	{
+		description: "Why not add support for Backbeat to your game?",
+		name: "Your game here...",
+		href: "/docs/devs/integrate-backbeat/",
+	},
+];
+---
+
+<SiteLayout
+	description="Get started with Backbeat on Linux, macOS, or Windows."
+	title="Get Started with Backbeat"
+>
+	<main class="get-started-page">
+		<section class="get-started-intro">
+			<h1>Get started</h1>
+			<p>Download the app, install some content, then play it in a supported game.</p>
+		</section>
+
+		<section class="get-started-step">
+			<header class="section-heading">
+				<h2>Download the app</h2>
+				<p>The app lets you click on "Download with Backbeat" links.</p>
+			</header>
+
+			<section aria-label="Downloads" class="download-options">
+				<a class="download-option" href="#">
+					<span aria-hidden="true" class="download-logo download-logo-linux">
+						<svg
+							viewBox={`0 0 ${platformIcons.linux.width ?? logos.width} ${platformIcons.linux.height ?? logos.height}`}
+							set:html={platformIcons.linux.body}
+						></svg>
+					</span>
+					<span class="download-option-copy">
+						<strong>Linux</strong>
+						<small>Download for Linux</small>
+					</span>
+					<span aria-hidden="true" class="download-arrow">↓</span>
+				</a>
+
+				<a class="download-option" href="#">
+					<span aria-hidden="true" class="download-logo download-logo-macos">
+						<svg
+							viewBox={`0 0 ${platformIcons.macos.width ?? logos.width} ${platformIcons.macos.height ?? logos.height}`}
+							set:html={platformIcons.macos.body}
+						></svg>
+					</span>
+					<span class="download-option-copy">
+						<strong>macOS</strong>
+						<small>Download for macOS</small>
+					</span>
+					<span aria-hidden="true" class="download-arrow">↓</span>
+				</a>
+
+				<a class="download-option" href="#">
+					<span aria-hidden="true" class="download-logo download-logo-windows">
+						<svg
+							viewBox={`0 0 ${platformIcons.windows.width ?? logos.width} ${platformIcons.windows.height ?? logos.height}`}
+							set:html={platformIcons.windows.body}
+						></svg>
+					</span>
+					<span class="download-option-copy">
+						<strong>Windows</strong>
+						<small>Download for Windows</small>
+					</span>
+					<span aria-hidden="true" class="download-arrow">↓</span>
+				</a>
+			</section>
+		</section>
+
+		<section class="directory get-started-step">
+			<header class="section-heading">
+				<h2>Get some content from a server</h2>
+				<p>Choose a server to find charts, packs, courses, and difficulty tables.</p>
+			</header>
+			<ul>
+				{servers.map((server) => (
+					<li>
+						<a href={server.href} rel="noopener noreferrer" target="_blank">
+							<span class="directory-item-copy">
+								<span class="directory-item-title">
+									<span aria-label={`${server.flagLabel} flag`} class="server-flag" role="img">
+										{server.flag}
+									</span>
+									<strong>{server.name}</strong>
+								</span>
+								<small>{server.description}</small>
+							</span>
+							<span aria-hidden="true">↗</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</section>
+
+		<section class="directory get-started-step">
+			<header class="section-heading">
+				<h2>Download a game</h2>
+				<p>Play your installed Backbeat content in a supported game.</p>
+			</header>
+			<ul>
+				{games.map((game) => (
+					<li>
+						<a href={game.href}>
+							<span class="directory-item-copy">
+								<strong>{game.name}</strong>
+								<small>{game.description}</small>
+							</span>
+							<span aria-hidden="true">↗</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</section>
+	</main>
+</SiteLayout>

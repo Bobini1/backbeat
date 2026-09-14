@@ -1,0 +1,37 @@
+---
+import { documentationNavigation, documentationOverview } from "../docs-navigation";
+
+interface Props {
+	currentId: string;
+}
+
+const { currentId } = Astro.props;
+---
+
+<nav aria-label="Documentation" class="docs-navigation">
+	<a
+		aria-current={currentId === documentationOverview.id ? "page" : undefined}
+		class="docs-sidebar-link docs-navigation-link"
+		href={documentationOverview.href}
+	>
+		{documentationOverview.label}
+	</a>
+	{documentationNavigation.map((section) => (
+			<div class="docs-navigation-section">
+				<p class="docs-navigation-heading">{section.label}</p>
+				<ul class="docs-navigation-list">
+					{section.items.map((item) => (
+						<li>
+							<a
+								aria-current={currentId === item.id ? "page" : undefined}
+								class="docs-sidebar-link docs-navigation-link"
+								href={item.href}
+							>
+								{item.label}
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		))}
+</nav>

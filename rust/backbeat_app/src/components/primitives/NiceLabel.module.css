@@ -1,0 +1,10 @@
+.heading {
+	margin: 0.25rem 0;
+
+	font-size: 0.7rem;
+	font-weight: 600;
+	line-height: 1;
+	color: var(--c-subtext-0);
+	text-transform: uppercase;
+	letter-spacing: 0.125em;
+}

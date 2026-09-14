@@ -1,0 +1,91 @@
+.shell {
+	overflow: hidden;
+	display: flex;
+	flex-direction: row;
+	height: 100vh;
+}
+
+.content {
+	position: relative;
+
+	overflow: hidden;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+
+	min-width: 0;
+
+	background: var(--c-surface-0);
+}
+
+.main {
+	position: relative;
+	z-index: 1;
+
+	overflow: auto;
+	overscroll-behavior: contain;
+	display: flex;
+	flex: 1;
+	flex-flow: column;
+	gap: 1rem;
+
+	min-height: 0;
+	padding: 1.5rem 2rem;
+
+	background: transparent;
+}
+
+.header {
+	position: relative;
+	z-index: 2;
+
+	display: flex;
+	gap: 1rem;
+	align-items: flex-start;
+	justify-content: space-between;
+
+	padding: 1.1rem 2rem 1rem;
+	border-bottom: 1px solid var(--c-base-border);
+
+	background: var(--c-base);
+}
+
+.headerTitle {
+	margin: 0;
+
+	font-size: 1.3rem;
+	font-weight: 700;
+	line-height: 1.15;
+	text-wrap: balance;
+	letter-spacing: -0.02em;
+}
+
+.headerSubtitle {
+	margin: 0.25rem 0 0;
+	font-size: 0.8rem;
+	color: var(--c-subtext-0);
+}
+
+.headerActions {
+	display: flex;
+	flex-shrink: 0;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.toastOverlay {
+	pointer-events: none;
+
+	position: fixed;
+	z-index: 1000;
+	right: 1rem;
+	bottom: 1rem;
+
+	display: flex;
+	flex-direction: column-reverse;
+	gap: 0.5rem;
+	align-items: stretch;
+
+	width: min(22rem, calc(100vw - 2rem));
+	max-width: min(22rem, calc(100vw - 2rem));
+}

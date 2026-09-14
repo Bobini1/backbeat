@@ -1,0 +1,49 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+	headings: MarkdownHeading[];
+}
+
+interface Section {
+	children: MarkdownHeading[];
+	heading: MarkdownHeading;
+}
+
+const { headings } = Astro.props;
+const sections: Section[] = [];
+
+for (const heading of headings) {
+	if (heading.depth === 2 || sections.length === 0) {
+		sections.push({ children: [], heading });
+	} else {
+		sections.at(-1)?.children.push(heading);
+	}
+}
+---
+
+<nav aria-label="Table of contents" class="table-of-contents">
+	<ol class="table-of-contents-list">
+		{sections.map((section) => (
+				<li>
+					<a class="docs-sidebar-link table-of-contents-link" href={`#${section.heading.slug}`}>
+						{section.heading.text}
+					</a>
+					{section.children.length > 0 && (
+						<ol class="table-of-contents-children">
+							{section.children.map((heading) => (
+								<li>
+									<a
+										class="docs-sidebar-link table-of-contents-link"
+										href={`#${heading.slug}`}
+									>
+										{heading.text}
+									</a>
+								</li>
+							))}
+						</ol>
+					)}
+				</li>
+			))}
+	</ol>
+</nav>

@@ -1,0 +1,4 @@
+.input {
+	border: 1px solid var(--c-base-border);
+	background-color: var(--c-base);
+}

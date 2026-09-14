@@ -1,0 +1,79 @@
+.statView {
+	display: flex;
+	flex-wrap: wrap;
+
+	border-top: 1px solid var(--c-base-border);
+	border-left: 1px solid var(--c-base-border);
+
+	background: var(--c-base);
+}
+
+.stat {
+	display: flex;
+	flex: 1 1 14rem;
+	flex-flow: column-reverse;
+	gap: 0.75rem;
+	justify-content: space-between;
+
+	min-width: 14rem;
+	padding: 0.875rem;
+	border-right: 1px solid var(--c-base-border);
+	border-bottom: 1px solid var(--c-base-border);
+}
+
+.stat[data-variant="success"] {
+	color: var(--c-subtext-success);
+	background-color: color-mix(in oklch, var(--c-success) var(--c-tint-amount), var(--c-base));
+}
+
+:is([data-variant="success"] .statFooter > :first-child) {
+	color: var(--c-text-success);
+}
+
+.stat[data-variant="danger"] {
+	color: var(--c-subtext-danger);
+	background-color: color-mix(in oklch, var(--c-danger) var(--c-tint-amount), var(--c-base));
+}
+
+:is([data-variant="danger"] .statFooter > :first-child) {
+	color: var(--c-text-danger);
+}
+
+.stat[data-variant="warning"] {
+	color: var(--c-subtext-warning);
+	background-color: color-mix(in oklch, var(--c-warning) var(--c-tint-amount), var(--c-base));
+}
+
+:is([data-variant="warning"] .statFooter > :first-child) {
+	color: var(--c-text-warning);
+}
+
+.statValue {
+	font-family: var(--font-mono);
+	font-size: 1.25rem;
+	font-weight: bold;
+	line-height: 1;
+}
+
+.statFooter {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.statFooter *,
+.statValue {
+	margin: 0;
+}
+
+.statDetail {
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	font-weight: 600;
+	line-height: 1;
+	color: var(--c-success);
+}
+
+:is(:root[data-theme="light"] .statDetail) {
+	color: var(--c-green-700);
+}

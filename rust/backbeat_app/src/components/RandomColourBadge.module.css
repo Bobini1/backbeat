@@ -1,0 +1,22 @@
+.badge {
+	--badge-colour: hsl(var(--badge-hue) 68% 70%);
+
+	display: inline-block;
+
+	padding: 0.12rem 0.32rem;
+	border: 1px solid color-mix(in srgb, var(--badge-colour) 50%, var(--c-base-border));
+
+	font-family: var(--font-mono);
+	font-size: 0.72rem;
+	font-weight: 600;
+	color: color-mix(in srgb, var(--badge-colour) 60%, var(--c-text));
+	white-space: nowrap;
+
+	background: color-mix(in srgb, var(--badge-colour) 25%, var(--c-base));
+}
+
+:root[data-theme="light"] .badge {
+	border-color: color-mix(in srgb, var(--badge-colour) 50%, var(--c-base-border));
+	color: color-mix(in srgb, var(--badge-colour) 40%, var(--c-text));
+	background: color-mix(in srgb, var(--badge-colour) 25%, var(--c-base));
+}

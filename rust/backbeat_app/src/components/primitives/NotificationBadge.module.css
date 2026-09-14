@@ -1,0 +1,38 @@
+.container {
+	position: relative;
+}
+
+.badge {
+	position: absolute;
+	top: -0.4rem;
+	right: -0.55rem;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	min-width: 0.95rem;
+	height: 0.95rem;
+	padding: 0 0.2rem;
+	border-radius: 999px;
+
+	font-family: var(--font-mono);
+	font-size: 0.58rem;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--c-text-accent-contrast);
+	letter-spacing: -0.02em;
+
+	background: var(--c-accent);
+	box-shadow: 0 0 0 2px var(--c-base);
+}
+
+.badge[data-variant="danger"] {
+	color: var(--c-text-danger-contrast);
+	background-color: var(--c-danger);
+}
+
+.badge[data-variant="warning"] {
+	color: var(--c-text-warning-contrast);
+	background-color: var(--c-warning);
+}

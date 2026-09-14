@@ -1,0 +1,690 @@
+/* Global styles: design tokens, app shell, and shared UI primitives.
+   Route- and component-specific styles live in sidecar `.css` files
+   imported from the matching `.tsx` (see Settings.css). */
+
+@import url("@fontsource-variable/hanken-grotesk");
+@import url("@fontsource-variable/jetbrains-mono");
+
+:root {
+	/* === colour scheme === */
+
+	--c-white: #fff;
+	--c-black: #000;
+
+	/* neutral */
+
+	--c-neutral-950: oklch(15% 0.004 290deg);
+	--c-neutral-900: oklch(23% 0.007 290deg);
+	--c-neutral-800: oklch(31% 0.009 290deg);
+	--c-neutral-700: oklch(39% 0.011 290deg);
+	--c-neutral-600: oklch(47% 0.013 290deg);
+	--c-neutral-500: oklch(55% 0.014 290deg);
+	--c-neutral-400: oklch(63% 0.011 290deg);
+	--c-neutral-300: oklch(71% 0.008 290deg);
+	--c-neutral-200: oklch(79% 0.006 290deg);
+	--c-neutral-100: oklch(87% 0.003 290deg);
+	--c-neutral-50: oklch(95% 0.001 290deg);
+
+	/* green */
+
+	--c-green-950: oklch(18% 0.046 130deg);
+	--c-green-900: oklch(25.7% 0.066 130deg);
+	--c-green-800: oklch(33.4% 0.085 130deg);
+	--c-green-700: oklch(41.1% 0.105 130deg);
+	--c-green-600: oklch(49.2% 0.125 130deg);
+	--c-green-500: oklch(57.1% 0.144 130deg);
+	--c-green-400: oklch(66% 0.162 130deg);
+	--c-green-300: oklch(74% 0.178 130deg);
+	--c-green-200: oklch(83.1% 0.162 130deg);
+	--c-green-100: oklch(90% 0.142 130deg);
+	--c-green-50: oklch(95% 0.112 130deg);
+
+	/* yellow */
+	--c-yellow-950: oklch(35% 0.074 95deg);
+	--c-yellow-900: oklch(43% 0.088 95deg);
+	--c-yellow-800: oklch(55% 0.115 95deg);
+	--c-yellow-700: oklch(66% 0.13 95deg);
+	--c-yellow-600: oklch(73% 0.15 95deg);
+	--c-yellow-500: oklch(78.5% 0.161 95deg);
+	--c-yellow-400: oklch(85% 0.165 95deg);
+	--c-yellow-300: oklch(88.4% 0.165 95deg);
+	--c-yellow-200: oklch(90.7% 0.138 95deg);
+	--c-yellow-100: oklch(92.6% 0.104 95deg);
+	--c-yellow-50: oklch(96% 0.064 95deg);
+
+	/* red */
+	--c-red-origin: oklch(60% 0.205 32deg);
+	--c-red-950: oklch(17% 0.058 32deg);
+	--c-red-900: oklch(27.5% 0.094 32deg);
+	--c-red-800: oklch(35% 0.119 32deg);
+	--c-red-700: oklch(42.5% 0.145 32deg);
+	--c-red-600: oklch(50% 0.171 32deg);
+	--c-red-500: oklch(57.5% 0.196 32deg);
+	--c-red-400: oklch(65.5% 0.199 32deg);
+	--c-red-300: oklch(72.5% 0.149 32deg);
+	--c-red-200: oklch(80% 0.104 32deg);
+	--c-red-100: oklch(87.5% 0.06 32deg);
+	--c-red-50: oklch(95% 0.023 32deg);
+
+	/* blue */
+	--c-blue-950: oklch(15% 0.045 252deg);
+	--c-blue-900: oklch(23% 0.069 252deg);
+	--c-blue-800: oklch(31% 0.093 252deg);
+	--c-blue-700: oklch(39% 0.117 252deg);
+	--c-blue-600: oklch(47% 0.141 252deg);
+	--c-blue-500: oklch(55% 0.165 252deg);
+	--c-blue-400: oklch(63% 0.18 252deg);
+	--c-blue-300: oklch(71% 0.156 252deg);
+	--c-blue-200: oklch(79% 0.109 252deg);
+	--c-blue-100: oklch(87% 0.066 252deg);
+	--c-blue-50: oklch(95% 0.024 252deg);
+
+	/* purple */
+	--c-purple-origin: oklch(55% 0.25 290deg);
+	--c-purple-950: oklch(15% 0.079 290deg);
+	--c-purple-900: oklch(23% 0.121 290deg);
+	--c-purple-800: oklch(31% 0.163 290deg);
+	--c-purple-700: oklch(39% 0.187 290deg);
+	--c-purple-600: oklch(47% 0.222 290deg);
+	--c-purple-500: oklch(55% 0.232 290deg);
+	--c-purple-400: oklch(63% 0.2 290deg);
+	--c-purple-300: oklch(71% 0.151 290deg);
+	--c-purple-200: oklch(79% 0.106 290deg);
+	--c-purple-100: oklch(87% 0.063 290deg);
+	--c-purple-50: oklch(95% 0.024 290deg);
+
+	/* === colour tokens === */
+
+	/* --- constants --- */
+	--c-shade-amount: 45%;
+	--c-tint-amount: 18%;
+	--c-opacity: 40%;
+
+	/* --- base tokens --- */
+	--c-base: var(--c-white);
+	--c-base-shaded: color-mix(in oklch, var(--c-neutral-50) var(--c-shade-amount), var(--c-base));
+	--c-base-tinted: color-mix(in oklch, var(--c-accent) var(--c-tint-amount), var(--c-base));
+	--c-base-border: var(--c-neutral-100);
+
+	/* -- surface tokens -- */
+
+	/* - surface-0 - */
+	--c-surface-0: var(--c-neutral-50);
+	--c-surface-0-shaded: color-mix(
+		in oklch,
+		var(--c-neutral-100) var(--c-shade-amount),
+		var(--c-surface-0)
+	);
+	--c-surface-0-tinted: color-mix(
+		in oklch,
+		var(--c-accent) var(--c-tint-amount),
+		var(--c-surface-0)
+	);
+	--c-surface-border-0: var(--c-neutral-200);
+
+	/* - surface-1 - */
+	--c-surface-1: var(--c-neutral-100);
+	--c-surface-1-shaded: color-mix(
+		in oklch,
+		var(--c-neutral-200) var(--c-shade-amount),
+		var(--c-surface-1)
+	);
+	--c-surface-1-tinted: color-mix(
+		in oklch,
+		var(--c-accent) var(--c-tint-amount),
+		var(--c-surface-1)
+	);
+	--c-surface-border-1: var(--c-neutral-300);
+
+	/* -- text tokens -- */
+	--c-text: var(--c-neutral-950);
+	--c-subtext-0: var(--c-neutral-800);
+	--c-subtext-1: var(--c-neutral-700);
+	--c-subtext-2: var(--c-neutral-500);
+	--c-text-faded: oklch(from var(--c-text) l c h / var(--c-opacity));
+
+	/* --- accent tokens --- */
+
+	--c-accent: var(--c-purple-500);
+	--c-accent-shaded: color-mix(
+		in oklch,
+		var(--c-purple-600) var(--c-shade-amount),
+		var(--c-accent)
+	);
+	--c-accent-faded: oklch(from var(--c-accent) l c h / var(--c-opacity));
+
+	/* -- surface tokens -- */
+
+	/* - surface-0 - */
+	--c-surface-accent-0: var(--c-purple-100);
+	--c-surface-accent-0-shaded: color-mix(
+		in oklch,
+		var(--c-purple-200) var(--c-shade-amount),
+		var(--c-surface-accent-0)
+	);
+	--c-surface-accent-border-0: var(--c-purple-300);
+
+	/* - surface-1 - */
+	--c-surface-accent-1: var(--c-purple-200);
+	--c-surface-accent-1-shaded: color-mix(
+		in oklch,
+		var(--c-purple-300) var(--c-shade-amount),
+		var(--c-surface-accent-1)
+	);
+	--c-surface-accent-border-1: var(--c-purple-400);
+
+	/* -- text tokens -- */
+	--c-text-accent: var(--c-purple-900);
+	--c-text-accent-contrast: var(--c-white);
+	--c-subtext-accent: var(--c-purple-800);
+
+	/* --- success tokens --- */
+
+	--c-success: var(--c-green-300);
+	--c-success-shaded: color-mix(
+		in oklch,
+		var(--c-green-400) var(--c-shade-amount),
+		var(--c-success)
+	);
+	--c-success-faded: oklch(from var(--c-success) l c h / var(--c-opacity));
+
+	/* -- surface tokens -- */
+
+	/* - surface-0 */
+	--c-surface-success-0: var(--c-green-100);
+	--c-surface-success-0-shaded: color-mix(
+		in oklch,
+		var(--c-green-200) var(--c-shade-amount),
+		var(--c-surface-success-0)
+	);
+	--c-surface-success-border-0: var(--c-green-300);
+
+	/* - surface-1 */
+	--c-surface-success-1: var(--c-green-200);
+	--c-surface-success-1-shaded: color-mix(
+		in oklch,
+		var(--c-green-300) var(--c-shade-amount),
+		var(--c-surface-success-1)
+	);
+	--c-surface-success-border-1: var(--c-green-400);
+
+	/* -- text tokens -- */
+	--c-text-success: var(--c-green-900);
+	--c-text-success-contrast: var(--c-neutral-950);
+	--c-subtext-success: var(--c-green-800);
+
+	/* --- warning tokens --- */
+
+	--c-warning: var(--c-yellow-300);
+	--c-warning-shaded: color-mix(
+		in oklch,
+		var(--c-yellow-400) var(--c-shade-amount),
+		var(--c-warning)
+	);
+	--c-warning-faded: oklch(from var(--c-warning) l c h / var(--c-opacity));
+
+	/* -- surface tokens -- */
+
+	/* - surface-0 */
+	--c-surface-warning-0: var(--c-yellow-100);
+	--c-surface-warning-0-shaded: color-mix(
+		in oklch,
+		var(--c-yellow-200) var(--c-shade-amount),
+		var(--c-surface-warning-0)
+	);
+	--c-surface-warning-border-0: var(--c-yellow-400);
+
+	/* - surface-1 */
+	--c-surface-warning-1: var(--c-yellow-200);
+	--c-surface-warning-1-shaded: color-mix(
+		in oklch,
+		var(--c-yellow-300) var(--c-shade-amount),
+		var(--c-surface-warning-1)
+	);
+	--c-surface-warning-border-1: var(--c-yellow-400);
+
+	/* -- text tokens -- */
+	--c-text-warning: var(--c-yellow-950);
+	--c-text-warning-contrast: var(--c-neutral-950);
+	--c-subtext-warning: var(--c-yellow-900);
+
+	/* --- danger tokens --- */
+
+	--c-danger: var(--c-red-500);
+	--c-danger-shaded: color-mix(in oklch, var(--c-red-600) var(--c-shade-amount), var(--c-danger));
+	--c-danger-faded: oklch(from var(--c-danger) l c h / var(--c-opacity));
+
+	/* -- surface tokens -- */
+
+	/* - surface-0 */
+	--c-surface-danger-0: var(--c-red-100);
+	--c-surface-danger-0-shaded: color-mix(
+		in oklch,
+		var(--c-red-200) var(--c-shade-amount),
+		var(--c-surface-danger-0)
+	);
+	--c-surface-danger-border-0: var(--c-red-300);
+
+	/* - surface-1 */
+	--c-surface-danger-1: var(--c-red-200);
+	--c-surface-danger-1-shaded: color-mix(
+		in oklch,
+		var(--c-red-300) var(--c-shade-amount),
+		var(--c-surface-danger-1)
+	);
+	--c-surface-danger-border-1: var(--c-red-400);
+
+	/* -- text tokens -- */
+	--c-text-danger: var(--c-red-900);
+	--c-text-danger-contrast: var(--c-white);
+	--c-subtext-danger: var(--c-red-800);
+
+	/* === animation & transition === */
+	--transition-duration: 50ms;
+	--transition-duration-lg: 125ms;
+	--transition: var(--transition-duration) ease-in-out;
+	--transition-lg: var(--transition-duration-lg) ease-in-out;
+
+	/* === font === */
+	--font-sans:
+		"Hanken Grotesk Variable", -apple-system, blinkmacsystemfont, "Segoe UI", system-ui,
+		sans-serif;
+	--font-mono:
+		"JetBrains Mono Variable", ui-monospace, "SF Mono", "Cascadia Code", menlo, consolas,
+		monospace;
+
+	color-scheme: light;
+}
+
+:root[data-theme="dark"],
+section[data-theme="dark"] {
+	/* --- constants --- */
+	--c-shade-amount: 60%;
+
+	/* --- base tokens --- */
+	--c-base: var(--c-neutral-900);
+	--c-base-shaded: color-mix(in oklch, var(--c-neutral-800) var(--c-shade-amount), var(--c-base));
+	--c-base-tinted: color-mix(in oklch, var(--c-accent) var(--c-tint-amount), var(--c-base));
+	--c-base-border: var(--c-neutral-700);
+
+	/* -- surface tokens -- */
+
+	/* - surface-0 - */
+	--c-surface-0: var(--c-neutral-950);
+	--c-surface-0-shaded: color-mix(
+		in oklch,
+		var(--c-neutral-900) var(--c-shade-amount),
+		var(--c-surface-0)
+	);
+	--c-surface-border-0: var(--c-neutral-800);
+
+	/* - surface-1 - */
+	--c-surface-1: var(--c-black);
+	--c-surface-1-shaded: color-mix(
+		in oklch,
+		var(--c-neutral-950) var(--c-shade-amount),
+		var(--c-surface-1)
+	);
+	--c-surface-border-1: var(--c-neutral-900);
+
+	/* -- text tokens -- */
+	--c-text: var(--c-neutral-100);
+	--c-subtext-0: var(--c-neutral-200);
+	--c-subtext-1: var(--c-neutral-300);
+
+	/* --- accent tokens --- */
+
+	/* -- surface tokens -- */
+
+	/* - surface-0 - */
+	--c-surface-accent-0: var(--c-purple-900);
+	--c-surface-accent-0-shaded: color-mix(
+		in oklch,
+		var(--c-purple-800) var(--c-shade-amount),
+		var(--c-surface-accent-0)
+	);
+	--c-surface-accent-border-0: var(--c-purple-700);
+
+	/* - surface-1 - */
+	--c-surface-accent-1: var(--c-purple-800);
+	--c-surface-accent-1-shaded: color-mix(
+		in oklch,
+		var(--c-purple-700) var(--c-shade-amount),
+		var(--c-surface-accent-1)
+	);
+	--c-surface-accent-border-1: var(--c-purple-600);
+
+	/* -- text tokens -- */
+	--c-text-accent: var(--c-purple-50);
+	--c-subtext-accent: var(--c-purple-100);
+
+	/* --- success tokens --- */
+
+	/* - surface-0 - */
+	--c-surface-success-0: var(--c-green-900);
+	--c-surface-success-0-shaded: color-mix(
+		in oklch,
+		var(--c-green-800) var(--c-shade-amount),
+		var(--c-surface-success-0)
+	);
+	--c-surface-success-border-0: var(--c-green-700);
+
+	/* - surface-1 - */
+	--c-surface-success-1: var(--c-green-800);
+	--c-surface-success-1-shaded: color-mix(
+		in oklch,
+		var(--c-green-700) var(--c-shade-amount),
+		var(--c-surface-success-1)
+	);
+	--c-surface-success-border-1: var(--c-green-600);
+
+	/* -- text tokens -- */
+	--c-text-success: var(--c-green-50);
+	--c-subtext-success: var(--c-green-100);
+
+	/* --- warning tokens --- */
+
+	/* -- surface tokens -- */
+
+	/* - surface-0 - */
+	--c-surface-warning-0: var(--c-yellow-950);
+	--c-surface-warning-0-shaded: color-mix(
+		in oklch,
+		var(--c-yellow-900) var(--c-shade-amount),
+		var(--c-surface-warning-0)
+	);
+	--c-surface-warning-border-0: var(--c-yellow-800);
+
+	/* - surface-1 - */
+	--c-surface-warning-1: var(--c-yellow-900);
+	--c-surface-warning-1-shaded: color-mix(
+		in oklch,
+		var(--c-yellow-800) var(--c-shade-amount),
+		var(--c-surface-warning-1)
+	);
+	--c-surface-warning-border-1: var(--c-yellow-700);
+
+	/* -- text tokens -- */
+	--c-text-warning: var(--c-yellow-50);
+	--c-subtext-warning: var(--c-yellow-100);
+
+	/* --- danger tokens --- */
+
+	/* -- surface tokens -- */
+
+	/* - surface-0 - */
+	--c-surface-danger-0: var(--c-red-900);
+	--c-surface-danger-0-shaded: color-mix(
+		in oklch,
+		var(--c-red-800) var(--c-shade-amount),
+		var(--c-surface-danger-0)
+	);
+	--c-surface-danger-border-0: var(--c-red-700);
+
+	/* - surface-1 - */
+	--c-surface-danger-1: var(--c-red-800);
+	--c-surface-danger-1-shaded: color-mix(
+		in oklch,
+		var(--c-red-700) var(--c-shade-amount),
+		var(--c-surface-danger-1)
+	);
+	--c-surface-danger-border-1: var(--c-red-600);
+
+	/* -- text tokens -- */
+	--c-text-danger: var(--c-red-50);
+	--c-subtext-danger: var(--c-red-100);
+
+	color-scheme: dark;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+:where(html, body) {
+	overflow: hidden;
+	overscroll-behavior: none;
+	height: 100%;
+	margin: 0;
+}
+
+:where(body) {
+	font-family: var(--font-sans);
+	font-variant-numeric: tabular-nums;
+	color: var(--c-text);
+
+	background: var(--c-base);
+
+	-webkit-font-smoothing: antialiased;
+}
+
+:where(code, kbd) {
+	padding: 0.0125rem 0.25rem;
+	font-family: var(--font-mono);
+	background-color: var(--c-surface-0);
+}
+
+:where(a) {
+	color: var(--c-text);
+	text-decoration: none;
+}
+
+:where(a:hover, a:focus) {
+	color: var(--c-text-accent);
+}
+
+:where(a:visited, a:active) {
+	color: inherit;
+}
+
+:where(button) {
+	cursor: pointer;
+	border: none;
+	font: inherit;
+	appearance: none;
+}
+
+:where(button:disabled) {
+	cursor: not-allowed;
+	opacity: 0.66;
+}
+
+:where(input) {
+	border: none;
+}
+
+:where(
+	input[type="url"],
+	input[type="text"],
+	input[type="search"],
+	input[type="password"],
+	input[type="email"],
+	input[type="number"]
+) {
+	flex: 1 0 0%;
+
+	width: 100%;
+	padding: 0.33rem 0.66rem;
+
+	font: inherit;
+
+	background-color: var(--c-surface-2);
+}
+
+:where(ul, ol) {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 2px var(--box-shadow-color, var(--c-accent));
+}
+
+::selection {
+	color: var(--c-text);
+	background: oklch(from var(--c-accent) l c h / 33%);
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+	border: solid 2px transparent;
+	background: var(--c-base-border);
+	background-clip: padding-box;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* Remotes (shared row primitive used by Servers) */
+
+.export-menu {
+	position: relative;
+}
+
+.export-menu-trigger {
+	cursor: pointer;
+
+	display: flex;
+	gap: 0.4rem;
+	align-items: center;
+
+	padding: 0.25rem 0.5rem;
+	border: 1px solid var(--c-base-border);
+
+	font-size: 0.875rem;
+	font-weight: 600;
+	list-style: none;
+
+	background: transparent;
+}
+
+.export-menu-trigger::-webkit-details-marker {
+	display: none;
+}
+
+.export-menu-trigger:hover {
+	background: var(--c-base-tinted);
+}
+
+.export-menu-options {
+	position: absolute;
+	z-index: 40;
+	top: calc(100% + 0.25rem);
+	right: 0;
+
+	width: max-content;
+	padding: 0.3rem;
+	border: 1px solid var(--c-base-border);
+	border-radius: var(--radius-sm);
+
+	background: var(--c-base);
+}
+
+.export-menu-options button {
+	cursor: pointer;
+
+	display: block;
+
+	width: 100%;
+	padding: 0.35rem 0.45rem;
+	border: 0;
+	border-radius: var(--radius-sm);
+
+	font: inherit;
+	color: var(--c-text);
+	text-align: left;
+
+	background: transparent;
+}
+
+.export-menu-options button:hover {
+	background: var(--c-base-shaded);
+}
+
+.section-link {
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: var(--c-subtext-2);
+	text-decoration: none;
+}
+
+.section-link:hover {
+	color: var(--c-accent-shaded);
+}
+
+.section-overflow-note {
+	margin: 0.35rem 0 0;
+	font-size: 0.8rem;
+	color: var(--c-subtext-1);
+}
+
+.section-overflow-note a {
+	color: inherit;
+}
+
+.section-divider {
+	margin: 1.25rem 0 1rem;
+	border: none;
+	border-top: 1px solid var(--c-surface-1);
+}
+
+/* Breadcrumb nav shown at the top of detail pages. */
+
+.breadcrumb {
+	margin: 0;
+	font-size: 0.82rem;
+}
+
+.breadcrumb a {
+	color: var(--c-subtext-1);
+	text-decoration: none;
+}
+
+.breadcrumb a:hover {
+	color: var(--text);
+}
+
+/* Utility text styles */
+
+.mono {
+	overflow: hidden;
+	display: block;
+
+	font-family: var(--font-mono);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Empty state (placeholder screens) */
+
+.empty-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	min-height: 7rem;
+	border: 1px dashed var(--c-surface-2);
+
+	font-size: 0.85rem;
+	color: var(--c-subtext-2);
+}
+
+/* Smaller empty-state used inside a detail page section, where a full
+   7rem placeholder would look disproportionate next to compact tables. */
+.empty-state-compact {
+	justify-content: flex-start;
+	min-height: 0;
+	padding: 0.6rem 0.75rem;
+	text-align: left;
+}
+
+.error {
+	color: var(--c-danger-text);
+}

@@ -1,0 +1,55 @@
+.button {
+	padding: 0.25rem 0.5rem;
+	border: 1px solid var(--button-border, var(--button-bg));
+
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--button-text, var(--c-text));
+
+	background-color: var(--button-bg);
+
+	transition: var(--transition);
+	transition-property: background-color, border-color;
+}
+
+.button:not(:disabled):hover {
+	border-color: var(--button-hover);
+	background-color: var(--button-hover);
+}
+
+.button[data-variant="accent"] {
+	--button-bg: var(--c-accent);
+	--button-hover: var(--c-accent-shaded);
+	--button-text: var(--c-text-accent-contrast);
+}
+
+.button[data-variant="success"] {
+	--button-bg: var(--c-success);
+	--button-hover: var(--c-success-shaded);
+	--button-text: var(--c-text-success-contrast);
+}
+
+.button[data-variant="danger"] {
+	--button-bg: var(--c-danger);
+	--button-hover: var(--c-danger-shaded);
+	--button-text: var(--c-text-danger-contrast);
+}
+
+.button[data-variant="warning"] {
+	--button-bg: var(--c-warning);
+	--button-hover: var(--c-warning-shaded);
+	--button-text: var(--c-text-warning-contrast);
+}
+
+.button[data-variant="base"] {
+	--button-bg: transparent;
+	--button-hover: var(--c-base-tinted);
+	--button-text: var(--c-text);
+	--button-border: var(--c-base-border);
+}
+
+.button[data-variant="surface"] {
+	--button-bg: var(--c-surface-1);
+	--button-hover: var(--c-surface-1-shaded);
+	--button-text: var(--c-text);
+}

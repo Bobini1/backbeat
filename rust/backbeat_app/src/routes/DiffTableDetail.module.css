@@ -1,0 +1,40 @@
+.levelList {
+	position: relative;
+}
+
+.levelRow {
+	display: flex;
+	place-items: center;
+}
+
+.levelName {
+	flex: 0 0 var(--level-name-width, max-content);
+	width: var(--level-name-width, max-content);
+	margin-right: 1rem;
+	font-weight: bold;
+}
+
+.levelNameSizer {
+	position: absolute;
+
+	display: grid;
+
+	width: max-content;
+
+	font-weight: bold;
+	white-space: nowrap;
+
+	visibility: hidden;
+}
+
+.levelCount {
+	width: calc(calc(var(--level-count-length, 3) * 1ch) * 2);
+	font-family: var(--font-mono);
+	text-align: end;
+}
+
+.levelName,
+.levelNameSizer,
+.levelCount {
+	font-size: 0.8rem;
+}

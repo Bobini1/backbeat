@@ -1,0 +1,31 @@
+.row {
+	display: flex;
+	place-items: center;
+}
+
+.status {
+	display: flex;
+	flex: 1 0 0%;
+	gap: 0.5rem;
+	place-items: center;
+}
+
+.status button {
+	font-family: var(--font-mono);
+}
+
+.error {
+	font-size: 0.8rem;
+	color: var(--c-danger);
+}
+
+.connection {
+	display: flex;
+	gap: 0.125rem;
+	font-size: 0.8rem;
+	color: var(--c-subtext-2);
+}
+
+.connection[data-error="true"] {
+	color: var(--c-danger);
+}

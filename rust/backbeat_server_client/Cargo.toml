@@ -1,0 +1,25 @@
+[package]
+name = "backbeat_server_client"
+version = "0.5.0-beta"
+edition.workspace = true
+authors = ["zkldi <zkldi@proton.me>"]
+keywords = ["backbeat", "rhythm-game"]
+categories = []
+repository = "https://github.com/zkldi/backbeat"
+license = "GPL-3.0"
+readme = "README.md"
+description = "A HTTP client for interfacing with a Backbeat server"
+
+[lints]
+workspace = true
+
+[dependencies]
+backbeat_core.workspace = true
+backbeat_store_config.workspace = true
+futures.workspace = true
+reqwest = { workspace = true, features = ["json"] }
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+url.workspace = true

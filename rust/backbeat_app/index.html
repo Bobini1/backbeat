@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Backbeat</title>
+		<style>
+			:root {
+				background: #0b0b0f;
+				color: #f2f2f6;
+				color-scheme: dark;
+			}
+
+			:root[data-theme="light"] {
+				background: #f7f7fb;
+				color: #17171d;
+				color-scheme: light;
+			}
+
+			html,
+			body,
+			#root {
+				margin: 0;
+				min-height: 100%;
+				background: inherit;
+			}
+		</style>
+		<script>
+			window.__backbeatStartupMarks = [["html head script", performance.now()]];
+			// Set the theme attribute before paint to avoid a flash. The solid
+			// theme module owns it after mount; this just primes it.
+			(function () {
+				try {
+					var p = localStorage.getItem("backbeat.theme") || "system";
+					var dark =
+						window.matchMedia &&
+						window.matchMedia("(prefers-color-scheme: dark)").matches;
+					var eff = p === "system" ? (dark ? "dark" : "light") : p;
+					document.documentElement.dataset.theme = eff;
+				} catch (e) {}
+			})();
+			window.__backbeatStartupMarks.push(["html theme primed", performance.now()]);
+		</script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script>
+			window.__backbeatStartupMarks.push(["body before module", performance.now()]);
+		</script>
+		<script type="module" src="/src/main.tsx"></script>
+	</body>
+</html>

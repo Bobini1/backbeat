@@ -1,0 +1,53 @@
+.dropzone {
+	cursor: pointer;
+
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 0.5rem;
+	align-items: center;
+	justify-content: center;
+
+	min-height: 16rem;
+	border: 2px dashed var(--c-surface-border-0);
+
+	font: inherit;
+	color: var(--c-subtext-0);
+
+	background: var(--c-base);
+
+	transition:
+		border-color 120ms ease,
+		color 120ms ease,
+		background-color 120ms ease;
+}
+
+.dropzone:focus-visible {
+	border-color: var(--c-accent);
+	outline: none;
+	box-shadow: 0 0 0 2px var(--c-accent);
+}
+
+.dropzone[data-active="true"] {
+	border-color: var(--c-accent);
+	color: var(--c-text-accent);
+	background: var(--c-surface-accent-0);
+}
+
+.dropzone:disabled {
+	cursor: wait;
+	opacity: 0.7;
+}
+
+.dropzone strong {
+	font-size: 1rem;
+}
+
+.dropzone span {
+	font-size: 0.8rem;
+}
+
+.icon {
+	width: 2rem;
+	height: 2rem;
+}

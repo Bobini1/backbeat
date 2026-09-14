@@ -1,0 +1,28 @@
+[package]
+name = "backbeat_store_config"
+version = "0.5.0-beta"
+edition.workspace = true
+authors = ["zkldi <zkldi@proton.me>"]
+keywords = ["backbeat", "rhythm-game"]
+categories = []
+repository = "https://github.com/zkldi/backbeat"
+license = "GPL-3.0"
+readme = "README.md"
+description = "Types for Backbeat store configuration"
+
+[features]
+ts = ["dep:ts-rs"]
+
+[dependencies]
+directories = { workspace = true }
+fs-err = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+toml = { workspace = true }
+ts-rs = { workspace = true, optional = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+
+[lints]
+workspace = true
