@@ -80,7 +80,6 @@ jobs:
 
     capi-artifacts:
         name: C API (${{ matrix.target }})
-        if: ${{ false }}
         needs: validate
         runs-on: ${{ matrix.runner }}
         timeout-minutes: 45
