@@ -1,6 +1,6 @@
 cask "backbeat" do
   version "0.5.0"
-  sha256 "cec9afefc780a8628c5ccb3061c351e0c406c49b3803ab13948f3f1e158bb022"
+  sha256 "3aa55a24b95abb503a8929084380f915089b35945f9d3220b30e114fd3945967"
 
   url "https://github.com/zkldi/backbeat/releases/download/v#{version}/Backbeat_#{version}_universal.dmg"
   name "Backbeat"
