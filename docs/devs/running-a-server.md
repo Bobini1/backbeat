@@ -11,7 +11,7 @@ I recommend the CLI approach, as it also makes it easy to add content to your se
 You can install the cli with:
 
 ```sh
-cargo install --locked bkb
+cargo install --locked bkb --version 0.5.0-beta
 ```
 
 If you have the [bkb CLI](https://crates.io/crates/bkb) installed, just run:
