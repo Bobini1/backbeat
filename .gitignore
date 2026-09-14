@@ -3,6 +3,8 @@ book/
 
 .backbeat/
 
+dist/
+
 # rust compile artifacts
 target
 rust/backbeat_c_sdk/include/backbeat.h
