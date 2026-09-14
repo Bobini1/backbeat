@@ -162,7 +162,7 @@ impl ConvertAndImportCommand {
 				let actual = AssetId(Sha256::checksum_bytes(&data));
 				anyhow::ensure!(actual == asset_id, "asset hash changed while importing");
 
-				store.import_asset(path)?;
+				store.import_asset(&asset_path)?;
 			}
 		}
 
