@@ -22,7 +22,13 @@ function parseNestedCode(node) {
 	const lines = node.value.split("\n");
 	const opening = lines[0].match(FENCE);
 	const closing = lines.at(-1);
-	if (!opening || !closing || !new RegExp(`^${opening.groups.fence[0]}{${opening.groups.fence.length},}\\s*$`).test(closing)) {
+	if (
+		!opening ||
+		!closing ||
+		!new RegExp(`^${opening.groups.fence[0]}{${opening.groups.fence.length},}\\s*$`).test(
+			closing,
+		)
+	) {
 		return null;
 	}
 
@@ -42,61 +48,55 @@ function element(tagName, properties, children) {
 export function codeTabsHandler(_state, node) {
 	const { groupIndex, tabs } = node.data;
 	const groupId = `code-tabs-${groupIndex}`;
-	const tabButtons = tabs
-		.map(({ label }, index) => {
-			const tabId = `${groupId}-tab-${index}`;
-			const panelId = `${groupId}-panel-${index}`;
-			return element(
-				"button",
-				{
-					ariaControls: panelId,
-					ariaSelected: index === 0,
-					className: ["code-tabs-tab"],
-					id: tabId,
-					role: "tab",
-					tabIndex: index === 0 ? 0 : -1,
-					type: "button",
-				},
-				[{ type: "text", value: label }],
-			);
-		})
+	const tabButtons = tabs.map(({ label }, index) => {
+		const tabId = `${groupId}-tab-${index}`;
+		const panelId = `${groupId}-panel-${index}`;
+		return element(
+			"button",
+			{
+				ariaControls: panelId,
+				ariaSelected: index === 0,
+				className: ["code-tabs-tab"],
+				id: tabId,
+				role: "tab",
+				tabIndex: index === 0 ? 0 : -1,
+				type: "button",
+			},
+			[{ type: "text", value: label }],
+		);
+	});
 
-	const panels = tabs
-		.map(({ code, language, meta }, index) => {
-			const tabId = `${groupId}-tab-${index}`;
-			const panelId = `${groupId}-panel-${index}`;
-			const codeProperties = language ? { className: [`language-${language}`] } : {};
-			if (meta) codeProperties.metastring = meta;
-			return element(
-				"div",
-				{
-					ariaLabelledBy: tabId,
-					className: ["code-tabs-panel"],
-					hidden: index !== 0,
-					id: panelId,
-					role: "tabpanel",
-					tabIndex: 0,
-				},
-				[
-					element("pre", {}, [
-						element("code", codeProperties, [{ type: "text", value: code }]),
-					]),
-				],
-			);
-		})
+	const panels = tabs.map(({ code, language, meta }, index) => {
+		const tabId = `${groupId}-tab-${index}`;
+		const panelId = `${groupId}-panel-${index}`;
+		const codeProperties = language ? { className: [`language-${language}`] } : {};
+		if (meta) codeProperties.metastring = meta;
+		return element(
+			"div",
+			{
+				ariaLabelledBy: tabId,
+				className: ["code-tabs-panel"],
+				hidden: index !== 0,
+				id: panelId,
+				role: "tabpanel",
+				tabIndex: 0,
+			},
+			[
+				element("pre", {}, [
+					element("code", codeProperties, [{ type: "text", value: code }]),
+				]),
+			],
+		);
+	});
 
-	return element(
-		"div",
-		{ className: ["code-tabs"], dataCodeTabs: "true" },
-		[
-			element(
-				"div",
-				{ ariaLabel: "Code examples", className: ["code-tabs-list"], role: "tablist" },
-				tabButtons,
-			),
-			...panels,
-		],
-	);
+	return element("div", { className: ["code-tabs"], dataCodeTabs: "true" }, [
+		element(
+			"div",
+			{ ariaLabel: "Code examples", className: ["code-tabs-list"], role: "tablist" },
+			tabButtons,
+		),
+		...panels,
+	]);
 }
 
 export default function remarkCodeTabs() {

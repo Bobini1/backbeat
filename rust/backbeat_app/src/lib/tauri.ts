@@ -316,10 +316,7 @@ export function installCollectionDocument(url: string): Promise<CollectionKind> 
 	return invoke<CollectionKind>("install_collection_document", { url });
 }
 
-export function uninstallCollectionDocument(
-	url: string,
-	removeChartsToo = false,
-): Promise<void> {
+export function uninstallCollectionDocument(url: string, removeChartsToo = false): Promise<void> {
 	return invoke<void>("remove_collection", {
 		url,
 		removeChartsToo,

@@ -242,7 +242,8 @@ export default function Downloads() {
 						<For each={rows()}>
 							{(snapshot) => {
 								const kind = downloadKind(snapshot);
-								const target = () => descriptions()[snapshot.key.value] ?? snapshot.key.value;
+								const target = () =>
+									descriptions()[snapshot.key.value] ?? snapshot.key.value;
 								const progress = snapshot.progress;
 								const percent = progressPercent(progress);
 								const label = progressLabel(progress);
@@ -296,7 +297,13 @@ export default function Downloads() {
 												</span>
 											</div>
 										</Show>
-										<Show when={progress.state === "failed" ? snapshot.error : undefined}>
+										<Show
+											when={
+												progress.state === "failed"
+													? snapshot.error
+													: undefined
+											}
+										>
 											{(message) => (
 												<p class="download-row-error">{message()}</p>
 											)}
