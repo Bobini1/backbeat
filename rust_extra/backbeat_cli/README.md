@@ -1,10 +1,10 @@
-# `backbeat_cli bkb)`
+# `backbeat_cli (bkb)`
 
 The backbeat CLI is a swiss army knife for interfacing with your backbeat store. You can think of it like a CLI interface to `backbeat_sdk`, plus some extras.
 
 ## Installation
 
-You can install the backbeat_cli straight off of cargo:
+You can install the backbeat CLI straight off of cargo:
 
 ```sh
 cargo install --locked bkb --version 0.5.0-beta

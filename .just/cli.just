@@ -6,4 +6,4 @@ cli-install:
 # Usage: just cli-flamegraph import -r path/to/charts/
 cli-flamegraph *args:
 	CARGO_HOME=$HOME/.cargo PATH=$PATH \
-		cargo flamegraph --profile dev-release -p backbeat_cli --bin bkb -- {{args}}
+		cargo flamegraph --profile dev-release -p bkb --bin bkb -- {{args}}
