@@ -60,7 +60,7 @@ class NativeBindingsLayoutTest {
                 "bkb_bundle_search_result_free", "bkb_bytes_free", "bkb_collection_download_data_report_free",
                 "bkb_corruption_report_free",
                 "bkb_collection_metadata_list_free", "bkb_course_free", "bkb_error_string", "bkb_libcommithash",
-                "bkb_libversion", "bkb_pack_free", "bkb_download_snapshot_list_free",
+                "bkb_libversion", "bkb_sqlite_version_number", "bkb_pack_free", "bkb_download_snapshot_list_free",
                 "bkb_download_overview_free", "bkb_download_list_result_free",
                 "bkb_store_asset_prune", "bkb_store_bundle_download_assets", "bkb_store_bundle_rm",
                 "bkb_store_collection_fetch_download_data", "bkb_store_collection_fetch_header",

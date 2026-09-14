@@ -10,8 +10,14 @@ use crate::error::{BKB_ERR_INCOMPATIBLE_SQLITE, bkb_error_code};
 /// WAL, foreign-key, and trigger support.
 pub const BKB_SQLITE_MIN_VERSION_NUMBER: i32 = 3_038_000;
 
+/// Return the version number of the SQLite implementation linked into the process.
+#[unsafe(no_mangle)]
+pub extern "C" fn bkb_sqlite_version_number() -> i32 {
+	unsafe { sqlite3_libversion_number() }
+}
+
 pub(crate) fn ensure_compatible() -> Result<(), bkb_error_code> {
-	let compatible = unsafe { sqlite3_libversion_number() >= BKB_SQLITE_MIN_VERSION_NUMBER }
+	let compatible = bkb_sqlite_version_number() >= BKB_SQLITE_MIN_VERSION_NUMBER
 		&& unsafe { sqlite3_threadsafe() != 0 }
 		&& compile_option(c"ENABLE_FTS5")
 		&& !compile_option(c"OMIT_JSON")
@@ -37,5 +43,6 @@ mod tests {
 	#[test]
 	fn linked_sqlite_is_compatible() {
 		assert_eq!(ensure_compatible(), Ok(()));
+		assert!(bkb_sqlite_version_number() >= BKB_SQLITE_MIN_VERSION_NUMBER);
 	}
 }

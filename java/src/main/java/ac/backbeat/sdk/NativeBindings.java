@@ -77,6 +77,7 @@ interface NativeBindings extends Library {
 
     int bkb_libversion();
     Pointer bkb_libcommithash();
+    int bkb_sqlite_version_number();
     Pointer bkb_error_string(int code);
 
     int bkb_bb_from_file(String path, PointerByReference outBundle);

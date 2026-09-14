@@ -37,6 +37,10 @@ val nativeJar = tasks.register<Jar>("nativeJar") {
 
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        events("failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
     if (nativeLibrary.isPresent && nativePlatform.isPresent) {
         dependsOn(nativeJar)
         classpath += files(nativeJar)

@@ -25,6 +25,7 @@ class BackbeatNativeIntegrationTest {
     void standaloneBundlesWork() throws Exception {
         assertEquals(Backbeat.LIB_VERSION, Backbeat.libVersion());
         assertFalse(Backbeat.libCommitHash().isBlank());
+        assertTrue(Backbeat.sqliteVersionNumber() >= Backbeat.SQLITE_MIN_VERSION_NUMBER);
         assertFalse(Backbeat.errorString(ErrorCode.NOT_FOUND).isBlank());
 
         byte[] chart = "#TITLE Java SDK\n".getBytes(StandardCharsets.UTF_8);

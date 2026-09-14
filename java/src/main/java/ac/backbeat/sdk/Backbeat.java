@@ -21,6 +21,13 @@ public final class Backbeat {
     }
 
     /**
+     * Return the version number of the SQLite implementation linked into Backbeat.
+     */
+    public static int sqliteVersionNumber() {
+        return NativeBindings.INSTANCE.bkb_sqlite_version_number();
+    }
+
+    /**
      * Convert an error code from backbeat_c_sdk into reasonable human text.
      */
     public static String errorString(int code) {
