@@ -1,5 +1,11 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
 project(backbeat_c_examples LANGUAGES C CXX)
+
+# Discover the package independently in sibling directories before using it
+# here. This catches imported-target scope and repeated-discovery regressions.
+enable_testing()
+add_subdirectory(cmake_consumer first_consumer)
+add_subdirectory(cmake_consumer second_consumer)
 
 find_package(Backbeat CONFIG REQUIRED)
 
@@ -12,5 +18,8 @@ set_target_properties(store_info asset_read version PROPERTIES C_STANDARD 11)
 set_target_properties(cpp_link PROPERTIES CXX_STANDARD 17)
 
 foreach(target store_info asset_read version cpp_link)
-    target_link_libraries(${target} PRIVATE Backbeat::Backbeat Backbeat::SQLite)
+    target_link_libraries(${target} PRIVATE Backbeat::Backbeat)
 endforeach()
+
+add_test(NAME version COMMAND version)
+add_test(NAME cpp_link COMMAND cpp_link)
