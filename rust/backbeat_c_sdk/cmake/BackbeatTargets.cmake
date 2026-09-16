@@ -1,5 +1,3 @@
-# Imported targets belong to the caller's directory scope. A global include
-# guard would prevent another directory from discovering this package.
 if(TARGET Backbeat::Backbeat)
     set(Backbeat_FOUND TRUE)
     return()
