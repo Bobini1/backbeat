@@ -18,13 +18,13 @@ Download and unpack the package for your platform. It contains the
 `backbeat.h` header, the static library, a compatible SQLite library,
 and CMake/pkg-config metadata.
 
-With CMake 3.14 or newer, point `CMAKE_PREFIX_PATH` at the unpacked SDK and link
-the Backbeat target. It carries the SQLite and platform dependencies:
+If you're CMake, the LLM tells me that you should point `CMAKE_PREFIX_PATH` at the unpacked SDK and link the
+provided targets:
 
 ```cmake
 find_package(Backbeat CONFIG REQUIRED)
 
-target_link_libraries(your_game PRIVATE Backbeat::Backbeat)
+target_link_libraries(your_game PRIVATE Backbeat::Backbeat Backbeat::SQLite)
 ```
 
 For example:
@@ -33,15 +33,6 @@ For example:
 cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/backbeat-c-sdk
 cmake --build build
 ```
-
-The SDK uses its packaged SQLite archive unless the consumer already provides
-`SQLite::SQLite3` or `Backbeat::SQLite`. If no SQLite archive is packaged,
-CMake searches for SQLite 3.38 or newer. The selected SQLite must enable FTS5
-and thread safety, and retain JSON, WAL, foreign-key, and trigger support.
-`Backbeat::SQLite` remains available for existing consumers that link it directly.
-
-Release archives live in `lib/`; optional Debug archives live in `debug/lib/`.
-Packages containing only Release archives also use them for other configurations.
 
 On Unix, the package also provides a `backbeat.pc` file for use with
 `pkg-config`:
