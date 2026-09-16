@@ -113,7 +113,7 @@ fn spawn_collection_download(
 	name: String,
 ) {
 	tauri::async_runtime::spawn(async move {
-		run_collection_download(&app, &store, url, kind, name).await;
+		let _ = run_collection_download(&app, &store, url, kind, name).await;
 	});
 }
 
@@ -123,7 +123,7 @@ async fn run_collection_download(
 	url: String,
 	kind: CollectionKind,
 	name: String,
-) {
+) -> Result<(), String> {
 	let descriptions = collection_item_descriptions(store, kind, &url).unwrap_or_default();
 	let progress_app = app.clone();
 	let progress_url = url.clone();
@@ -148,11 +148,12 @@ async fn run_collection_download(
 		})
 		.await;
 
-	let event = match result {
+	let (event, outcome) = match result {
 		Ok(report) => {
 			let total = collection_download_total(&report);
 			let failed = report.has_failures();
-			CollectionDownloadEvent {
+			let error = failed.then(|| format!("{} downloads failed", report.errors.len()));
+			let event = CollectionDownloadEvent {
 				kind,
 				name,
 				url,
@@ -165,12 +166,15 @@ async fn run_collection_download(
 				total,
 				item: None,
 				description: None,
-				error: failed.then(|| format!("{} downloads failed", report.errors.len())),
-			}
+				error: error.clone(),
+			};
+			let outcome = error.map_or(Ok(()), Err);
+			(event, outcome)
 		}
 		Err(err) => {
 			tracing::error!(?err, %kind, "collection content download failed");
-			CollectionDownloadEvent {
+			let error = err.to_string();
+			let event = CollectionDownloadEvent {
 				kind,
 				name,
 				url,
@@ -179,11 +183,13 @@ async fn run_collection_download(
 				total: 0,
 				item: None,
 				description: None,
-				error: Some(err.to_string()),
-			}
+				error: Some(error.clone()),
+			};
+			(event, Err(error))
 		}
 	};
 	let _ = app.emit(COLLECTION_DOWNLOAD_EVENT, event);
+	outcome
 }
 
 fn collection_item_descriptions(
@@ -299,12 +305,22 @@ pub async fn install_collection_document(
 	Ok(result.kind)
 }
 
-pub async fn install_or_update_collection(store: &Backbeat, url: &str) -> Result<(), String> {
-	store
+pub async fn install_or_update_collection(
+	app: &AppHandle,
+	store: &Backbeat,
+	url: &str,
+) -> Result<(), String> {
+	let result = store
 		.collection_fetch_upsert(url)
 		.await
-		.map(|_| ())
-		.map_err(|err| err.to_string())
+		.map_err(|err| err.to_string())?;
+	let name = match result.kind {
+		CollectionKind::Table => store.get_table(url).map_err(|err| err.to_string())?.name,
+		CollectionKind::Pack => store.get_pack(url).map_err(|err| err.to_string())?.name,
+		CollectionKind::Course => store.get_course(url).map_err(|err| err.to_string())?.name,
+	};
+
+	run_collection_download(app, store, url.to_owned(), result.kind, name).await
 }
 
 #[tauri::command]

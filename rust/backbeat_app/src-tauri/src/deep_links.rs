@@ -271,7 +271,7 @@ pub fn handle(app: &AppHandle, url: &Url) {
 			},
 		);
 
-		let result = run_action(&store, &action).await;
+		let result = run_action(&app, &store, &action).await;
 		let label = label.or_else(|| installed_description(&store, &action));
 		let event = match result {
 			Ok(()) => DownloadEvent {
@@ -317,7 +317,11 @@ fn installed_description(store: &Backbeat, action: &DeepLinkAction) -> Option<St
 	(!description.is_empty()).then(|| description.to_string())
 }
 
-async fn run_action(store: &Backbeat, action: &DeepLinkAction) -> Result<(), String> {
+async fn run_action(
+	app: &AppHandle,
+	store: &Backbeat,
+	action: &DeepLinkAction,
+) -> Result<(), String> {
 	match action {
 		DeepLinkAction::Chart { chart_id } => store
 			.server_download_chart(chart_id)
@@ -328,7 +332,7 @@ async fn run_action(store: &Backbeat, action: &DeepLinkAction) -> Result<(), Str
 			.await
 			.map_err(|err| err.to_string()),
 		DeepLinkAction::Collection { url } => {
-			crate::collections::install_or_update_collection(store, url).await
+			crate::collections::install_or_update_collection(app, store, url).await
 		}
 	}
 }

@@ -25,6 +25,8 @@ import styles from "./CollectionCoverageDetail.module.css";
 import CoverageCount from "./CoverageCount";
 import StatusBadge from "./StatusBadge";
 
+const DOWNLOAD_REFETCH_DEBOUNCE_MS = 500;
+
 export type CollectionDownloadProgress = {
 	current: number;
 	error: null | string;
@@ -74,7 +76,25 @@ export function CollectionCoverageDetail<T extends { name: string }>(props: {
 	const [updating, setUpdating] = createSignal(false);
 	const [updateError, setUpdateError] = createSignal<null | string>(null);
 	let unlisten: (() => void) | undefined;
+	let refetchTimer: ReturnType<typeof setTimeout> | undefined;
 	let disposed = false;
+
+	function refetchContentsAfterDownloadEvent(state: CollectionDownloadProgress["state"]) {
+		if (refetchTimer) {
+			clearTimeout(refetchTimer);
+			refetchTimer = undefined;
+		}
+
+		if (state === "downloading") {
+			refetchTimer = setTimeout(() => {
+				refetchTimer = undefined;
+				refetch();
+			}, DOWNLOAD_REFETCH_DEBOUNCE_MS);
+			return;
+		}
+
+		refetch();
+	}
 
 	onMount(() => {
 		void onCollectionDownloadEvent((event) => {
@@ -82,7 +102,7 @@ export function CollectionCoverageDetail<T extends { name: string }>(props: {
 				return;
 			}
 			setDownload({ ...event, item: event.description ?? event.item?.value ?? null });
-			refetch();
+			refetchContentsAfterDownloadEvent(event.state);
 		}).then((listener) => {
 			if (disposed) {
 				listener();
@@ -94,6 +114,9 @@ export function CollectionCoverageDetail<T extends { name: string }>(props: {
 
 	onCleanup(() => {
 		disposed = true;
+		if (refetchTimer) {
+			clearTimeout(refetchTimer);
+		}
 		unlisten?.();
 	});
 

@@ -124,6 +124,7 @@ jobs:
             MACOSX_DEPLOYMENT_TARGET: "11.0"
             SQLITE3_INCLUDE_DIR: ${{ github.workspace }}/target/package-sqlite/include
             SQLITE3_LIB_DIR: ${{ github.workspace }}/target/package-sqlite/lib
+            SQLITE3_NO_PKG_CONFIG: "1"
             # Keep SQLite as a separate archive so the host can substitute its own compatible build.
             SQLITE3_STATIC: "0"
 

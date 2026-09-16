@@ -19,7 +19,16 @@ final class NativeSupport {
     static void check(int code, String operation) {
         if (code == NativeBindings.OK) return;
         String error = NativeBindings.INSTANCE.bkb_error_string(code).getString(0, "UTF-8");
+        if (code == NativeBindings.ERR_INCOMPATIBLE_SQLITE) {
+            int linked = NativeBindings.INSTANCE.bkb_sqlite_version_number();
+            error += " (linked " + sqliteVersion(linked) + ", requires at least "
+                    + sqliteVersion(Backbeat.SQLITE_MIN_VERSION_NUMBER) + ")";
+        }
         throw new BackbeatException(code, operation + ": " + error);
+    }
+
+    private static String sqliteVersion(int version) {
+        return version / 1_000_000 + "." + version / 1_000 % 1_000 + "." + version % 1_000;
     }
 
     static int count(NativeBindings.SizeT value) {
