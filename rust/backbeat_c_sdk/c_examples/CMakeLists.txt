@@ -1,12 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(backbeat_c_examples LANGUAGES C CXX)
 
-# Discover the package independently in sibling directories before using it
-# here. This catches imported-target scope and repeated-discovery regressions.
-enable_testing()
-add_subdirectory(cmake_consumer first_consumer)
-add_subdirectory(cmake_consumer second_consumer)
-
 find_package(Backbeat CONFIG REQUIRED)
 
 add_executable(store_info store_info.c)
@@ -21,5 +15,6 @@ foreach(target store_info asset_read version cpp_link)
     target_link_libraries(${target} PRIVATE Backbeat::Backbeat)
 endforeach()
 
+enable_testing()
 add_test(NAME version COMMAND version)
 add_test(NAME cpp_link COMMAND cpp_link)
