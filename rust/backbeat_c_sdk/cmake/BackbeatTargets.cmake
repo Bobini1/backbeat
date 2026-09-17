@@ -74,15 +74,14 @@ foreach(_backbeat_component IN LISTS _backbeat_archives)
         MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
         MAP_IMPORTED_CONFIG_MINSIZEREL Release
         INTERFACE_INCLUDE_DIRECTORIES "${_backbeat_include_dir}")
-    if(WIN32 AND NOT DEFINED CMAKE_MAP_IMPORTED_CONFIG_DEBUG)
-        set_property(TARGET Backbeat::${_backbeat_component} PROPERTY
-            MAP_IMPORTED_CONFIG_DEBUG Debug)
-    endif()
     if(EXISTS "${_backbeat_prefix}/debug/lib/${_backbeat_filename}")
         set_property(TARGET Backbeat::${_backbeat_component} APPEND PROPERTY
             IMPORTED_CONFIGURATIONS DEBUG)
         set_target_properties(Backbeat::${_backbeat_component} PROPERTIES
             IMPORTED_LOCATION_DEBUG "${_backbeat_prefix}/debug/lib/${_backbeat_filename}")
+    else()
+        set_target_properties(Backbeat::${_backbeat_component} PROPERTIES
+            MAP_IMPORTED_CONFIG_DEBUG Release)
     endif()
 endforeach()
 
